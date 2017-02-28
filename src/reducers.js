@@ -69,6 +69,20 @@ export default function(state = initialState, action) {
             list => list.push(Map(action.payload))
         );
 
+    case 'MODIFY_FIGURE':
+        return state.updateIn(
+            ['dances', 'A Demo Dance', 'figures', action.payload.figureIndex],
+            fig => {
+                console.log('MODIFY_FIGURE', fig.toJS());
+                return fig.set(action.payload.keyProp, action.payload.value)
+            });
+
+    case 'DELETE_FIGURE':
+        return state.updateIn(
+            ['dances', 'A Demo Dance', 'figures'],
+            figures => figures.delete(action.payload.figureIndex)
+        );
+
       /*
     case 'ADD_TODO':
       // immutable .push, returns a new immutable List

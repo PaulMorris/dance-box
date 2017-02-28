@@ -1,5 +1,6 @@
 body {
     background: rgb(230, 230, 230);
+    font-family: sans-serif;
 }
 ul {
     padding: 0;
@@ -25,4 +26,10 @@ li {
     margin: 4px;
     background: white;
     border-radius: 4px;
+}
+.delete_figure_button {
+    display: inline-block;
+    border: 1px solid rgb(200, 200, 200);
+    border-radius: 4px;
+    padding: 4px 8px;
 }

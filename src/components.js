@@ -1,4 +1,5 @@
 import React from 'react';
+const rel = React.createElement;
 
 /*
 export function Todo(props) {
@@ -17,42 +18,98 @@ export function Todo(props) {
 export function Button(props) {
     // console.log(props);
     // const { mb } = props;
-    return <div>{props.text}</div>;
+    return rel('div', null, props.text);
+    // <div>{props.text}</div>;
 }
 
-export function MenuItem(props) {
-    return null;
-}
+/*
+React.createElement(Dropdown, {
+    keyprop: "repeat",
+    value: this.state.repeat,
+    options: this.props.repeatList,
+    onInput: this.handleSimpleChange
+}),
+*/
+
+var Dropdown = React.createClass({
+    handleChange: function(event) {
+        this.props.onInput(this.props.keyprop, event.target.value);
+    },
+    render: function() {
+        return React.DOM.select({
+            value: this.props.value,
+            onChange: this.handleChange
+        }, this.props.options.map((option, index) => {
+            return React.DOM.option({
+                // could use option[0] here instead of index...
+                key: this.props.keyprop + "Option" + index,
+                onChange: this.handleChange,
+                value: option[0],
+                disabled: this.props.disabled || false
+            }, option[1]);
+        }));
+    }
+});
 
 export function Menu(props) {
     console.log('menu', props);
-    let { options, value, className } = props;
+    let { options, value, keyProp, className, modifyFigure, figureIndex } = props;
     let itemToOption = item => <option value={item}>{item}</option>;
 
-    return (
-        <select className={className} name="usercard" value={value}>
-          {options.map(itemToOption)}
-        </select>
+    let handleChange = event => modifyFigure({
+        figureIndex: figureIndex,
+        keyProp: keyProp,
+        value: event.target.value
+    });
+
+    return rel('select',
+        {
+            className: className,
+            name: "usercard",
+            value: value,
+            onChange: handleChange
+        },
+        ...options.map(itemToOption)
     );
 }
 
 export function FigureItem(props) {
-    const { data, typeData } = props,
+    const { data, typeData, modifyFigure, figureIndex, deleteFigure } = props,
 
-        arraysOnly = key => Array.isArray(data[key]),
+        arraysOnly = key => Array.isArray(typeData[key]),
 
         toMenu = key => {
             let val = data[key];
-            return <Menu options={val} value={val} className="figure_item_select" />;
+            return rel(Menu,
+                {
+                    options: typeData[key],
+                    value: val,
+                    keyProp: key,
+                    className: "figure_item_select",
+                    modifyFigure: modifyFigure,
+                    figureIndex: figureIndex
+                });
         },
+
+        handleDelete = event => deleteFigure({
+            figureIndex: figureIndex
+        }),
 
         menus = Object.keys(typeData).filter(arraysOnly).map(toMenu);
 
     console.log('figureItem', menus); // , data, typeData);
 
-    return <div>{data.type} {menus} </div>;
+    return rel('div', null,
+        data.type + '  ',
+        ...menus,
+        rel('div',
+            {
+                onClick: handleDelete,
+                className: "delete_figure_button"
+            },
+            'X'
+    ));
 }
-
 /*
 export function FigureList(props) {
     console.log(props);
@@ -83,12 +140,19 @@ const toggleClick = id => event => {
 
 
 export function App(props) {
-  console.log("PROPS appState", props.appState.toJS());
-  const { appState, addFigure } = props;
+  console.log("PROPS appState", props.appState.toJS(), props);
+  const { appState, addFigure, modifyFigure, deleteFigure } = props;
 
   const figureButtonClick = data => event => {
       console.log('figureButtonClick', data, event);
-      return addFigure(data);
+      let keys = Object.keys(data);
+      let newData = {};
+      // for now we just use the first value as the default
+      keys.forEach(k => {
+          let val = data[k];
+          newData[k] = Array.isArray(val) ? val[0] : val;
+      });
+      return addFigure(newData);
   };
 
   const onSimpleInput = (event) => {
@@ -114,50 +178,68 @@ export function App(props) {
 
     // console.log('figureTypesKeys', figureTypesKeys);
 
-  return (
-    <div className='app_wrapper'>
+  const danceTitle = rel('input',
+    {
+        type: 'text',
+        id: 'dance-title',
+        className: 'title_field',
+        placeholder: 'Dance Title...',
+        onKeyUp: onSimpleInput
+    });
 
-      <input type='text'
-             id='dance-title'
-             className='title_field'
-             placeholder='Dance Title...'
-             onKeyUp={onSimpleInput} />
+  const figureButtons = rel('ul',
+    {
+        className: 'figure_button_list'
+    },
+    ...figureTypesKeys.map(k => {
+          let typeData = figureTypes[k];
+          // add the type to the data itself
+          // typeData['type'] = k;
+          return rel('li',
+            {
+                key: k,
+                className: 'figure_button',
+                onClick: figureButtonClick(typeData)
+            },
+            rel(Button, {text: k})
+        );
+    }))
 
-      <ul className='figure_button_list'>
-        {figureTypesKeys.map(k => {
-              let typeData = figureTypes[k];
-              // add the type to the data itself
-              // typeData['type'] = k;
-              return (
-                  <li key={k}
-                      className='figure_button'
-                      onClick={figureButtonClick(typeData)}>
-                    <Button data={typeData}
-                            text={k} />
-                  </li>
-              );
-        })}
-      </ul>
+    const figureList = rel('ul',
+        {
+            className: 'figure_list'
+        },
+        ...figures.map((figure, index) => {
 
-      <ul className='figure_list'>
-        {figures.map((figure, index) => {
-            console.log('figureTypes2', figureTypes);
+            // console.log('figureTypes2', figureTypes);
 
             let type = figure.type,
                 typeData = figureTypes[type];
 
-            console.log('typeData', type, typeData);
-            return (
-                <li key={figure + index}
-                    className='figure_item_li'
-                    onClick=''>
-                    <FigureItem data={figure} typeData={typeData} />
-                </li>
-            );
-        })}
-      </ul>
+            // console.log('typeData', type, typeData);
 
-    </div>
+            return rel('li',
+                {
+                    key: figure + index,
+                    className: 'figure_item_li'
+                },
+                rel(FigureItem,
+                    {
+                        data: figure,
+                        typeData: typeData,
+                        modifyFigure: modifyFigure,
+                        deleteFigure: deleteFigure,
+                        figureIndex: index
+                    })
+                );
+        }));
+
+  return rel('div',
+      {
+          className: 'app_wrapper'
+      },
+      danceTitle,
+      figureButtons,
+      figureList
   );
 }
-// .get(figure.type)

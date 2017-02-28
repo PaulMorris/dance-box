@@ -1,9 +1,24 @@
 
 
 export function addFigure(data) {
-    console.log("ADD_FIGURE");
+    console.log("ADD_FIGURE", data);
     return {
         type: 'ADD_FIGURE',
+        payload: data
+    };
+}
+
+export function modifyFigure(data) {
+    console.log("modifyFigure", data);
+    return {
+        type: 'MODIFY_FIGURE',
+        payload: data
+    };
+}
+
+export function deleteFigure(data) {
+    return {
+        type: 'DELETE_FIGURE',
         payload: data
     };
 }

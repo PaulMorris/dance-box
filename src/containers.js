@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import * as components from './components';
-import { addFigure } from './actions';
-// addTodo, toggleTodo, 
+import { addFigure, modifyFigure, deleteFigure } from './actions';
+// addTodo, toggleTodo,
 
 export const App = connect(
 
@@ -14,7 +14,9 @@ export const App = connect(
 // addTodo: text => dispatch(addTodo(text)),
   function mapDispatchToProps(dispatch) {
       return {
-        addFigure: id => dispatch(addFigure(id))
+        addFigure: data => dispatch(addFigure(data)),
+        modifyFigure: data => dispatch(modifyFigure(data)),
+        deleteFigure: data => dispatch(deleteFigure(data))
       };
   }
 )(components.App);
