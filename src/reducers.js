@@ -22,66 +22,101 @@ const demoDances = {
     }
 }
 
+
+
 const initialState = fromJS({
   dances: demoDances,
   figureTypes: {
       Circle: {
-          variations: {
-              direction: ['Left', 'Right'],
-              howFar: [0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0],
-              duration: [4,8,12,16]
-          },
-          defaults: {
-              direction: ['Left', 'Left'],
-              howFar: [1, 'Once Around'],
-              duration: [8, 'For 8 Beats']
-          }
+          direction: [
+              {value: 'Left', label: 'Left', default: true},
+              {value: 'Right', label: 'Right'}
+          ],
+          howFar: [
+              {value: 1, label: '1 Place'},
+              {value: 2, label: '2 Places'},
+              {value: 3, label: '3 Places'},
+              {value: 4, label: '4 Places', default: true},
+              {value: 5, label: '5 Places'},
+              {value: 6, label: '6 Places'}
+          ],
+          duration: [
+              {value: 4, label: 'For 4 Beats'},
+              {value: 8, label: 'For 8 Beats', default: true},
+              {value: 12, label: 'For 12 Beats'},
+              {value: 16, label: 'For 16 Beats'}
+          ]
       },
       Star: {
-          variations: {
-              direction: ['Left', 'Right'],
-              hands: ['Wrist', 'Across'],
-              howFar: [0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0],
-              duration: [4,8,12,16]
-          },
-          defaults: {
-              direction: 'Left',
-              hands: 'Wrist',
-              howFar: 1.0,
-              duration: 8
-          }
+          direction: [
+              {value: 'Left', label: 'Left', default: true},
+              {value: 'Right', label: 'Right'}
+          ],
+          howFar: [
+              {value: 1, label: '1 Place'},
+              {value: 2, label: '2 Places'},
+              {value: 3, label: '3 Places'},
+              {value: 4, label: '4 Places', default: true},
+              {value: 5, label: '5 Places'},
+              {value: 6, label: '6 Places'}
+          ],
+          hands: [
+              {value: 'Wrist', label: 'Wrist Style', default: true},
+              {value: 'HandsAcross', label: 'Hands Across Style'}
+          ],
+          duration: [
+              {value: 4, label: 'For 4 Beats'},
+              {value: 8, label: 'For 8 Beats', default: true},
+              {value: 12, label: 'For 12 Beats'},
+              {value: 16, label: 'For 16 Beats'}
+          ]
       },
       Swing: {
-          variations: {
-              who: ['Partner', 'Neighbor'],
-              duration: [4,8,12,16]
-          },
-          defaults: {
-              who: 'Partner',
-              duration: 16
-          }
+          who: [
+              {value: 'Partner', label: 'Partner', default: true},
+              {value: 'Neighbor', label: 'Neighbor'}
+          ],
+          duration: [
+              {value: 4, label: 'For 4 Beats'},
+              {value: 8, label: 'For 8 Beats'},
+              {value: 12, label: 'For 12 Beats'},
+              {value: 16, label: 'For 16 Beats', default: true}
+          ]
       },
       Balance: {
-          variations: {
-              who: ['Partner', 'Neighbor'],
-              duration: [4]
-          },
-          defaults: {
-              who: 'Partner',
-              duration: 4
-          }
+          who: [
+              {value: 'Partner', label: 'Partner', default: true},
+              {value: 'Neighbor', label: 'Neighbor'}
+          ],
+          duration: [
+              {value: 4, label: 'For 4 Beats', default: true}
+          ]
       },
       Allemande: {
-          variations: {
-              who: ['Partner', 'Neighbor', 'Gents', 'Ladies', 'Ones', 'Twos'],
-              howFar: [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2.0],
-              duration: [4,8,12,16]
-          },
-          defaults: {
-              who: 'Neighbor',
-              howFar: 1,
-              duration: 8
-          }
+          who: [
+              {value: 'Partner', label: 'Partner', default: true},
+              {value: 'Neighbor', label: 'Neighbor'},
+              {value: 'Gents', label: 'Gents'},
+              {value: 'Ladies', label: 'Ladies'},
+              {value: 'Ones', label: 'Ones'},
+              {value: 'Twos', label: 'Twos'}
+          ],
+          howFar: [
+              {value: 0.25, label: 'One Quarter'},
+              {value: 0.5, label: 'Half Way'},
+              {value: 0.75, label: 'Three Quarters'},
+              {value: 1.0, label: 'Once Around', default: true},
+              {value: 1.25, label: 'Once and a Quarter'},
+              {value: 1.5, label: 'Once and a Half'},
+              {value: 1.75, label: 'Once and Three Quarters'},
+              {value: 2.0, label: 'Twice Around'}
+          ],
+          duration: [
+              {value: 4, label: 'For 4 Beats', default: true},
+              {value: 8, label: 'For 8 Beats'},
+              {value: 12, label: 'For 12 Beats'},
+              {value: 16, label: 'For 16 Beats'}
+          ]
       }
   }
 });

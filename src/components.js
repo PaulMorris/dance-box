@@ -54,7 +54,7 @@ var Dropdown = React.createClass({
 export function Menu(props) {
     console.log('menu', props);
     let { options, value, keyProp, className, modifyFigure, figureIndex } = props;
-    let itemToOption = item => <option value={item}>{item}</option>;
+    let itemToOption = item => rel('option', {value: item.value}, item.label); // <option value={item}>{item}</option>;
 
     let handleChange = event => modifyFigure({
         figureIndex: figureIndex,
@@ -66,7 +66,8 @@ export function Menu(props) {
         {
             className: className,
             name: "usercard",
-            value: value,
+            // TODO: better naming needed...
+            value: value.value,
             onChange: handleChange
         },
         ...options.map(itemToOption)
@@ -74,16 +75,16 @@ export function Menu(props) {
 }
 
 export function FigureItem(props) {
-    const { type, danceFigure, typeVariations, modifyFigure, figureIndex, deleteFigure } = props,
+    const { type, danceFigure, typeData, modifyFigure, figureIndex, deleteFigure } = props,
 
-        arraysOnly = key => Array.isArray(typeVariations[key]),
+        arraysOnly = key => Array.isArray(typeData[key]),
 
         toMenu = key => {
-            let val = danceFigure[key];
+            // let val = danceFigure[key].value;
             return rel(Menu,
                 {
-                    options: typeVariations[key],
-                    value: val,
+                    options: typeData[key],
+                    value: danceFigure[key],
                     keyProp: key,
                     className: "figure_item_select",
                     modifyFigure: modifyFigure,
@@ -95,9 +96,9 @@ export function FigureItem(props) {
             figureIndex: figureIndex
         }),
 
-        menus = Object.keys(typeVariations).filter(arraysOnly).map(toMenu);
+        menus = Object.keys(typeData).filter(arraysOnly).map(toMenu);
 
-    console.log('figureItem', menus, danceFigure, typeVariations);
+    console.log('figureItem', menus, danceFigure, typeData);
 
     return rel('div', null,
         danceFigure.type + '  ',
@@ -137,7 +138,19 @@ const toggleClick = id => event => {
 };
 */
 
+var getFigureDefaults = (figureTypeData) => {
+    let keys = Object.keys(figureTypeData);
+    // let result = keys.map(key => figureTypeData[key].filter(obj => obj['default'] || false));
+    let result = {};
+    keys.forEach(key => {
+        let variations = figureTypeData[key];
+        let defaultInArray = variations.filter(obj => obj['default']);
+        result[key] = defaultInArray[0];
+    });
 
+    console.log('result', result);
+    return result;
+};
 
 export function App(props) {
   console.log("PROPS appState", props.appState.toJS(), props);
@@ -147,7 +160,7 @@ export function App(props) {
   const figureButtonClick = (figureTypeData, figureName) => event => {
       console.log('figureButtonClick', figureTypeData, event);
 
-      let danceFigure = figureTypeData.defaults;
+      let danceFigure = getFigureDefaults(figureTypeData);
       danceFigure.type = figureName;
       return addFigure(danceFigure);
   };
@@ -210,8 +223,7 @@ export function App(props) {
 
             // console.log('figureTypes2', figureTypes);
 
-            let type = danceFigure.type,
-                typeData = figureTypes[type];
+            let typeData = figureTypes[danceFigure.type];
 
             // console.log('typeData', type, typeData);
 
@@ -223,7 +235,7 @@ export function App(props) {
                 rel(FigureItem,
                     {
                         danceFigure: danceFigure,
-                        typeVariations: typeData.variations,
+                        typeData: typeData,
                         modifyFigure: modifyFigure,
                         deleteFigure: deleteFigure,
                         figureIndex: index
