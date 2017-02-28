@@ -26,33 +26,62 @@ const initialState = fromJS({
   dances: demoDances,
   figureTypes: {
       Circle: {
-          type: 'Circle',
-          direction: ['Left', 'Right'],
-          howFar: [0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0],
-          duration: [4,8,12,16]
+          variations: {
+              direction: ['Left', 'Right'],
+              howFar: [0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0],
+              duration: [4,8,12,16]
+          },
+          defaults: {
+              direction: ['Left', 'Left'],
+              howFar: [1, 'Once Around'],
+              duration: [8, 'For 8 Beats']
+          }
       },
       Star: {
-          type: 'Star',
-          direction: ['Left', 'Right'],
-          hands: ['Wrist', 'Across'],
-          howFar: [0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0],
-          duration: [4,8,12,16]
+          variations: {
+              direction: ['Left', 'Right'],
+              hands: ['Wrist', 'Across'],
+              howFar: [0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0],
+              duration: [4,8,12,16]
+          },
+          defaults: {
+              direction: 'Left',
+              hands: 'Wrist',
+              howFar: 1.0,
+              duration: 8
+          }
       },
       Swing: {
-          type: 'Swing',
-          who: ['Partner', 'Neighbor'],
-          duration: [4,8,12,16]
+          variations: {
+              who: ['Partner', 'Neighbor'],
+              duration: [4,8,12,16]
+          },
+          defaults: {
+              who: 'Partner',
+              duration: 16
+          }
       },
       Balance: {
-          type: 'Balance',
-          who: ['Partner', 'Neighbor'],
-          duration: [4]
+          variations: {
+              who: ['Partner', 'Neighbor'],
+              duration: [4]
+          },
+          defaults: {
+              who: 'Partner',
+              duration: 4
+          }
       },
       Allemande: {
-          type: 'Allemande',
-          who: ['Partner', 'Neighbor', 'Gents', 'Ladies', 'Ones', 'Twos'],
-          howFar: [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2.0],
-          duration: [4,8,12,16]
+          variations: {
+              who: ['Partner', 'Neighbor', 'Gents', 'Ladies', 'Ones', 'Twos'],
+              howFar: [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2.0],
+              duration: [4,8,12,16]
+          },
+          defaults: {
+              who: 'Neighbor',
+              howFar: 1,
+              duration: 8
+          }
       }
   }
 });
