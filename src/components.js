@@ -1,6 +1,13 @@
 import React from 'react';
 const rel = React.createElement;
 
+// convert 'string representations of numbers' (like html menu values)
+// to numbers if possible or just return the string.
+var numberify = (val) => {
+    let n = Number(val);
+    return n ? n : val;
+};
+
 /*
 export function Todo(props) {
   const { todo } = props,
@@ -53,13 +60,14 @@ var Dropdown = React.createClass({
 
 export function Menu(props) {
     console.log('menu', props);
-    let { options, value, keyProp, className, modifyFigure, figureIndex } = props;
+    let { type, options, value, keyProp, className, modifyFigure, figureIndex } = props;
     let itemToOption = item => rel('option', {value: item.value}, item.label); // <option value={item}>{item}</option>;
 
     let handleChange = event => modifyFigure({
+        type: type,
         figureIndex: figureIndex,
         keyProp: keyProp,
-        value: event.target.value
+        value: numberify(event.target.value)
     });
 
     return rel('select',
@@ -75,7 +83,7 @@ export function Menu(props) {
 }
 
 export function FigureItem(props) {
-    const { type, danceFigure, typeData, modifyFigure, figureIndex, deleteFigure } = props,
+    const {danceFigure, typeData, modifyFigure, figureIndex, deleteFigure} = props,
 
         arraysOnly = key => Array.isArray(typeData[key]),
 
@@ -83,6 +91,7 @@ export function FigureItem(props) {
             // let val = danceFigure[key].value;
             return rel(Menu,
                 {
+                    type: danceFigure.type,
                     options: typeData[key],
                     value: danceFigure[key],
                     keyProp: key,
@@ -109,7 +118,9 @@ export function FigureItem(props) {
                 className: "delete_figure_button"
             },
             'X'
-    ));
+    ),
+    ' ', danceFigure.startBeat, ' - ', danceFigure.endBeat
+    );
 }
 /*
 export function FigureList(props) {
