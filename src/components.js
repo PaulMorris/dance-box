@@ -8,36 +8,12 @@ var numberify = (val) => {
     return n ? n : val;
 };
 
-/*
-export function Todo(props) {
-  const { todo } = props,
-        // todo.text
-        txt = todo.text; // todo.get('text');
-
-  if(todo.isDone) { // todo.get('isDone')
-    return <strike>{txt}</strike>;
-  } else {
-    return <span>{txt}</span>;
-  }
-}
-*/
-
 export function Button(props) {
     // console.log(props);
     // const { mb } = props;
     return rel('div', null, props.text);
     // <div>{props.text}</div>;
 }
-
-/*
-React.createElement(Dropdown, {
-    keyprop: "repeat",
-    value: this.state.repeat,
-    options: this.props.repeatList,
-    onInput: this.handleSimpleChange
-}),
-*/
-
 
 var TextField = React.createClass({
     handleChange: function(event) {
@@ -73,6 +49,15 @@ var Dropdown = React.createClass({
         }));
     }
 });
+
+/*
+React.createElement(Dropdown, {
+    keyprop: "repeat",
+    value: this.state.repeat,
+    options: this.props.repeatList,
+    onInput: this.handleSimpleChange
+}),
+*/
 
 export function Menu(props) {
     console.log('menu', props);
@@ -138,32 +123,7 @@ export function FigureItem(props) {
     ' ', danceFigure.startBeat, ' - ', danceFigure.endBeat
     );
 }
-/*
-export function FigureList(props) {
-    console.log(props);
-    const { figures } = props;
 
-    return (
-        <ul className='figures_list'>
-            {figures.map(m => (
-              <li key={''}
-                  className='figureItem'
-                  onClick={''}>
-                <FigureItem item={m.toJS()} />
-              </li>
-            ))}
-        </ul>
-    );
-
-}
-*/
-
-/*
-const toggleClick = id => event => {
-    console.log("toggleClick");
-    return toggleTodo(id);
-};
-*/
 
 var getFigureDefaults = (figureTypeData) => {
     let keys = Object.keys(figureTypeData);
@@ -202,13 +162,7 @@ export function App(props) {
     const id = input.id;
 
     // const isEnterKey = (event.which == 13);
-    // const isLongEnough = text.length > 0;
-    /*
-    if(isEnterKey && isLongEnough) {
-      input.value = '';
-      addTodo(text);
-    }
-    */
+
   };
 
   const figures = appState.get('dances').get(currentDance).get('figures').toJS(),

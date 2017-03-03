@@ -1,5 +1,9 @@
 import { List, Map, fromJS } from 'immutable';
 
+
+// succinct hack for generating passable unique ids
+// const uid = () => Math.random().toString(34).slice(2);
+
 // dance title is the key
 const emptyDance = {
     title: '',
@@ -157,21 +161,9 @@ export default function(state = initialState, action) {
 
         let newFigures = fromJS('duration' === keyProp ? refreshStartsEnds(figures) : figures);
 
-        /*
-        if ('duration' === keyProp) {
-            let // figures = state.getIn(['dances', state.get('currentDance'), 'figures']),
-                newFigures = fromJS(refreshStartsEnds(figures.toJS()));
-        }
-        */
         return state.updateIn(
             ['dances', state.get('currentDance'), 'figures'],
             oldFigures => newFigures
-            /*
-            fig => {
-                console.log('MODIFY_FIGURE', fig.toJS());
-                return fig.set(keyProp, value)
-            });
-            */
         );
 
     } else if ('DELETE_FIGURE' === action.type) {
@@ -205,25 +197,4 @@ export default function(state = initialState, action) {
     } else {
         return state;
     }
-      /*
-    case 'ADD_TODO':
-      // immutable .push, returns a new immutable List
-      // and convert JS obj to immutable map
-      return todos.push(Map(action.payload));
-
-    case 'TOGGLE_TODO':
-        return todos.map(t => {
-          if(t.get('id') === action.payload) {
-
-            // update is a method on immutable Maps
-            // const todo = Map({ id: 0, text: 'foo', isDone: false });
-            // todo.update('isDone', isDone => !isDone);
-            // => { id: 0, text: 'foo', isDone: true }
-
-            return t.update('isDone', isDone => !isDone);
-          } else {
-            return t;
-          }
-        });
-        */
 }
