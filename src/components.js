@@ -38,6 +38,22 @@ React.createElement(Dropdown, {
 }),
 */
 
+
+var TextField = React.createClass({
+    handleChange: function(event) {
+        this.props.onInput(this.props.keyprop, event.target.value);
+    },
+    render: function() {
+        return rel('input',
+            {
+                type: "text",
+                // placeholder: "New Dance"
+                value: this.props.value,
+                onChange: this.handleChange
+            });
+    }
+});
+
 var Dropdown = React.createClass({
     handleChange: function(event) {
         this.props.onInput(this.props.keyprop, event.target.value);
@@ -166,7 +182,9 @@ var getFigureDefaults = (figureTypeData) => {
 export function App(props) {
   console.log("PROPS appState", props.appState.toJS(), props);
 
-  const { appState, addFigure, modifyFigure, deleteFigure } = props;
+  const { appState, addFigure, modifyFigure, deleteFigure, addNewDance, setDanceProperty } = props;
+
+  const currentDance = appState.get('currentDance');
 
   const figureButtonClick = (figureTypeData, figureName) => event => {
       console.log('figureButtonClick', figureTypeData, event);
@@ -193,19 +211,26 @@ export function App(props) {
     */
   };
 
-  const figures = appState.get('dances').get('A Demo Dance').get('figures').toJS(),
+  const figures = appState.get('dances').get(currentDance).get('figures').toJS(),
         figureTypes = appState.get('figureTypes').toJS(),
         figureTypesKeys = Object.keys(figureTypes);
 
     // console.log('figureTypesKeys', figureTypesKeys);
 
-  const danceTitle = rel('input',
-    {
+  const danceTitleOld = rel('input', {
         type: 'text',
         id: 'dance-title',
         className: 'title_field',
         placeholder: 'Dance Title...',
         onKeyUp: onSimpleInput
+    });
+
+  const danceTitle = rel(TextField, {
+        keyprop: "dance-title",
+        value: currentDance,
+        onInput: (event) => {
+            setDanceProperty('dance-title', event.target)
+        }
     });
 
   const figureButtons = rel('ul',
@@ -254,12 +279,36 @@ export function App(props) {
                 );
         }));
 
+    const danceList = rel('ul',
+        {
+            className: 'dance_list'
+        },
+        ...appState.get('dances').map((dance, index) => {
+            return rel('li',
+                {
+                    className: 'dance_list_item'
+                },
+                dance.title
+            );
+        })
+    );
+
+    const newDanceButton = rel('div',
+        {
+            className: 'new_dance_button',
+            onClick: addNewDance
+        },
+        'New Dance!'
+    );
+
   return rel('div',
       {
           className: 'app_wrapper'
       },
       danceTitle,
       figureButtons,
-      figureList
+      figureList,
+      newDanceButton,
+      danceList
   );
 }

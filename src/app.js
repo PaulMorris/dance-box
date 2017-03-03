@@ -5,14 +5,14 @@ import { Provider } from 'react-redux';
 import reducer from './reducers';
 import { App } from './containers';
 
-import { List, Map } from 'immutable';
-
 const store = createStore(reducer);
 
 render(
   // make the containers aware of the store, using the <Provider /> component
-  <Provider store={store}>
-    <App />
-  </Provider>,
+  React.createElement(
+      Provider,
+      {store: store},
+      React.createElement(App)
+  ),
   document.getElementById('app')
 );

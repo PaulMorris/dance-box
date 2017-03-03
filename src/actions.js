@@ -23,6 +23,19 @@ export function deleteFigure(data) {
     };
 }
 
+export function addNewDance() {
+    return {
+        type: 'ADD_NEW_DANCE'
+    };
+}
+
+export function setDanceProperty(prop, value) {
+    return {
+        type: 'SET_DANCE_PROPERTY',
+        payload: {prop: prop, value: value}
+    }
+}
+
 // succinct hack for generating passable unique ids
 // const uid = () => Math.random().toString(34).slice(2);
 

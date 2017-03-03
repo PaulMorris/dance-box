@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import * as components from './components';
-import { addFigure, modifyFigure, deleteFigure } from './actions';
+import { addFigure, modifyFigure, deleteFigure, addNewDance, setDanceProperty } from './actions';
 // addTodo, toggleTodo,
 
 export const App = connect(
@@ -16,7 +16,9 @@ export const App = connect(
       return {
         addFigure: data => dispatch(addFigure(data)),
         modifyFigure: data => dispatch(modifyFigure(data)),
-        deleteFigure: data => dispatch(deleteFigure(data))
+        deleteFigure: data => dispatch(deleteFigure(data)),
+        addNewDance: data => dispatch(addNewDance()),
+        setDanceProperty: (prop, value) => dispatch(setDanceProperty(prop, value))
       };
   }
 )(components.App);

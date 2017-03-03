@@ -1,26 +1,25 @@
 import { List, Map, fromJS } from 'immutable';
 
 // dance title is the key
-const demoDances = {
-    'A Demo Dance': {
-        authors: 'Paul Morris, Teri Harris',
-        type: 'Contra',
-        form: 'Improper',
-        formation: 'Duple Minor',
-        progression: 'Single',
-        level: 'Beginner',
-        notesMusic: 'Reels not Jigs',
-        notesCalling: 'Just do it',
-        notesTeaching: 'End effects!',
-        notesOther: 'Written on a train',
-        rating: 5,
-        figures: [
-            // { type: 'circle', direction: 'Left', duration: 8 },
-            // { type: 'swing', who: 'partners' },
-            // { type: 'allemande', direction: 'Left', who: 'neighbors', duration: 8, howFar: 1.5 }
-        ]
-    }
-}
+const emptyDance = {
+    title: '',
+    authors: '',
+    type: 'Contra',
+    form: 'Improper',
+    formation: 'Duple Minor',
+    progression: 'Single',
+    level: 'Beginner',
+    notesMusic: 'Reels not Jigs',
+    notesCalling: 'Just do it',
+    notesTeaching: 'End effects!',
+    notesOther: 'Written on a train',
+    rating: 5,
+    figures: [
+        // { type: 'circle', direction: 'Left', duration: 8 },
+        // { type: 'swing', who: 'partners' },
+        // { type: 'allemande', direction: 'Left', who: 'neighbors', duration: 8, howFar: 1.5 }
+    ]
+};
 
 const oneToSixPlaces = [
     {value: 1, label: '1 Place'},
@@ -32,7 +31,8 @@ const oneToSixPlaces = [
 ];
 
 const initialState = fromJS({
-  dances: demoDances,
+  dances: {'A Demo Dance': emptyDance},
+  currentDance: 'A Demo Dance',
   figureTypes: {
       Circle: {
           direction: [
@@ -131,7 +131,7 @@ var refreshStartsEnds = (figures) => {
 };
 
 export default function(state = initialState, action) {
-
+    console.log('reducer action', action);
     // TODO: HARDCODED dance
 
     if ('ADD_FIGURE' === action.type) {
@@ -139,16 +139,16 @@ export default function(state = initialState, action) {
         // console.log("state in reducer", state);
         let figureDefaults = action.payload,
             duration = figureDefaults.duration.value,
-            figures = state.getIn(['dances', 'A Demo Dance', 'figures']),
+            figures = state.getIn(['dances', state.get('currentDance'), 'figures']),
             figureData = Object.assign({}, figureDefaults, getStartEnd(figures, duration));
         return state.updateIn(
-            ['dances', 'A Demo Dance', 'figures'],
+            ['dances', state.get('currentDance'), 'figures'],
             list => list.push(Map(figureData))
         );
 
     } else if ('MODIFY_FIGURE' === action.type) {
         let {type, figureIndex, keyProp, value} = action.payload;
-        let figures = state.getIn(['dances', 'A Demo Dance', 'figures']).toJS();
+        let figures = state.getIn(['dances', state.get('currentDance'), 'figures']).toJS();
         // TODO: is this the best way to get the label?
         let propDefaults = state.getIn(['figureTypes', type, keyProp]).toJS();
         let label = propDefaults.find(item => item.value === value).label;
@@ -159,12 +159,12 @@ export default function(state = initialState, action) {
 
         /*
         if ('duration' === keyProp) {
-            let // figures = state.getIn(['dances', 'A Demo Dance', 'figures']),
+            let // figures = state.getIn(['dances', state.get('currentDance'), 'figures']),
                 newFigures = fromJS(refreshStartsEnds(figures.toJS()));
         }
         */
         return state.updateIn(
-            ['dances', 'A Demo Dance', 'figures'],
+            ['dances', state.get('currentDance'), 'figures'],
             oldFigures => newFigures
             /*
             fig => {
@@ -176,13 +176,32 @@ export default function(state = initialState, action) {
 
     } else if ('DELETE_FIGURE' === action.type) {
         let figureIndex = action.payload.figureIndex,
-            figures = state.getIn(['dances', 'A Demo Dance', 'figures']),
+            figures = state.getIn(['dances', state.get('currentDance'), 'figures']),
             newFigures = fromJS(refreshStartsEnds(figures.delete(figureIndex).toJS()));
             // toUpdate = newFigures.slice(figureIndex);
         return state.updateIn(
-            ['dances', 'A Demo Dance', 'figures'],
+            ['dances', state.get('currentDance'), 'figures'],
             oldFigures => newFigures
         );
+
+    } else if ('ADD_NEW_DANCE' === action.type) {
+        let dances = state.getIn(['dances']).toJS();
+
+        let newDances = fromJS(Object.assign({}, dances, {'foo': emptyDance}));
+        // TODO: this seems inelegant
+        let state1 = state.updateIn(
+            ['dances'],
+            oldDances => newDances
+        );
+        let state2 = state1.set('currentDance', 'foo');
+        return state2;
+
+    } else if ('SET_DANCE_PROPERTY' === action.type) {
+        let dance = state.getIn(['dances', state.get('currentDance')]);
+        // dance title as key for dances doesn't work when you change the title!  Duh.
+        return dance.setIn(['dances', state.get('currentDance'), action.payload.prop],
+            action.payload.value);
+
     } else {
         return state;
     }
