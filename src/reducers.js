@@ -159,16 +159,10 @@ export default function(state = initialState, action) {
         let figureDefaults = mori.toClj(action.payload),
             duration = mori.getIn(figureDefaults, ['duration', 'value']),
             currentDance = mori.get(state, 'currentDance'),
-            figures = mori.getIn(state, ['dances', currentDance, 'figures']) || mori.vector(),
-            figureData = mori.merge(figureDefaults, getStartEnd(figures, duration)),
-
-            // TODO: null after add new dance!
-            // test = mori.getIn(state, ['dances', currentDance, 'figures']),
-
-            newState = mori.updateIn(state,
-                ['dances', currentDance, 'figures'],
-                figs => mori.conj(figs || mori.vector(), figureData)
-            );
+            figures = mori.getIn(state, ['dances', currentDance, 'figures']),
+            newFig = mori.merge(figureDefaults, getStartEnd(figures, duration)),
+            newFigs = mori.conj(figures, newFig),
+            newState = mori.assocIn(state, ['dances', currentDance, 'figures'], newFigs);
         return newState;
 
     } else if ('MODIFY_FIGURE' === action.type) {
@@ -203,7 +197,7 @@ export default function(state = initialState, action) {
         // let newDances = mori.toClj(Object.assign({}, dances, {'foo': emptyDance}));
 
         let dances = mori.get(state, 'dances');
-        let newDances = mori.conj(dances, mori.vector('foo', emptyDance));
+        let newDances = mori.conj(dances, mori.hashMap('foo', mori.toClj(emptyDance)));
 
         // TODO: this could be more elegant
         let state1 = mori.assoc(state, 'dances', newDances);
