@@ -1,5 +1,8 @@
 import React from 'react';
 const rel = React.createElement;
+import mori from 'mori';
+
+const log = (...args) => console.log(...args.map(mori.toJs));
 
 // convert 'string representations of numbers' (like html menu values)
 // to numbers if possible or just return the string.
@@ -60,7 +63,7 @@ React.createElement(Dropdown, {
 */
 
 export function Menu(props) {
-    console.log('menu', props);
+    // console.log('menu', props);
     let { type, options, value, keyProp, className, modifyFigure, figureIndex } = props;
     let itemToOption = item => rel('option', {value: item.value}, item.label); // <option value={item}>{item}</option>;
 
@@ -108,7 +111,7 @@ export function FigureItem(props) {
 
         menus = Object.keys(typeData).filter(arraysOnly).map(toMenu);
 
-    console.log('figureItem', menus, danceFigure, typeData);
+    // console.log('figureItem', menus, danceFigure, typeData);
 
     return rel('div', null,
         danceFigure.type + '  ',
@@ -140,11 +143,11 @@ var getFigureDefaults = (figureTypeData) => {
 };
 
 export function App(props) {
-  console.log("PROPS appState", props.appState.toJS(), props);
+  log("PROPS appState", props.appState, props);
 
   const { appState, addFigure, modifyFigure, deleteFigure, addNewDance, setDanceProperty } = props;
 
-  const currentDance = appState.get('currentDance');
+  const currentDance = mori.get(appState, 'currentDance');
 
   const figureButtonClick = (figureTypeData, figureName) => event => {
       console.log('figureButtonClick', figureTypeData, event);
@@ -165,9 +168,10 @@ export function App(props) {
 
   };
 
-  const figures = appState.get('dances').get(currentDance).get('figures').toJS(),
-        figureTypes = appState.get('figureTypes').toJS(),
+  const figures = mori.toJs(mori.getIn(appState, ['dances', currentDance, 'figures'])) || [],
+        figureTypes = mori.toJs(mori.get(appState, 'figureTypes')),
         figureTypesKeys = Object.keys(figureTypes);
+    log('figs', figures);
 
     // console.log('figureTypesKeys', figureTypesKeys);
 
@@ -237,7 +241,7 @@ export function App(props) {
         {
             className: 'dance_list'
         },
-        ...appState.get('dances').map((dance, index) => {
+        ...mori.map(mori.get(appState, 'dances'), (dance, index) => {
             return rel('li',
                 {
                     className: 'dance_list_item'
