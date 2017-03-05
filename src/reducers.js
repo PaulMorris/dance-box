@@ -1,7 +1,7 @@
 import mori from 'mori';
 
 // succinct hack for generating passable unique ids
-// const uid = () => Math.random().toString(34).slice(2);
+const uid = () => Math.random().toString(34).slice(2);
 
 const log = (...args) => console.log(...args.map(mori.toJs));
 
@@ -36,8 +36,8 @@ const oneToSixPlaces = [
 ];
 
 const initialState = mori.toClj({
-  dances: {'A Demo Dance': emptyDance},
-  currentDance: 'A Demo Dance',
+  dances: {},
+  currentDance: '',
   figureTypes: {
       Circle: {
           direction: [
@@ -197,18 +197,17 @@ export default function(state = initialState, action) {
         // let newDances = mori.toClj(Object.assign({}, dances, {'foo': emptyDance}));
 
         let dances = mori.get(state, 'dances');
-        let newDances = mori.conj(dances, mori.hashMap('foo', mori.toClj(emptyDance)));
+        let id = uid();
+        let newDances = mori.conj(dances, mori.hashMap(id, mori.toClj(emptyDance)));
 
-        // TODO: this could be more elegant
+        // TODO: this could be more elegant?
         let state1 = mori.assoc(state, 'dances', newDances);
-        let state2 = mori.assoc(state1, 'currentDance', 'foo');
+        let state2 = mori.assoc(state1, 'currentDance', id);
         return state2;
 
     } else if ('SET_DANCE_PROPERTY' === action.type) {
         let currentDance = mori.get(state, 'currentDance');
-        let dance = mori.getIn(state, ['dances', currentDance]);
-        // dance title as key for dances doesn't work when you change the title!  Duh.
-        return dance.assocIn(['dances', currentDance, action.payload.prop], action.payload.value);
+        return mori.assocIn(state, ['dances', currentDance, action.payload.prop], action.payload.value);
 
     } else {
         return state;

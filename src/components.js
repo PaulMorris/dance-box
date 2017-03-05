@@ -18,19 +18,11 @@ export function Button(props) {
     // <div>{props.text}</div>;
 }
 
-var TextField = React.createClass({
-    handleChange: function(event) {
-        this.props.onInput(this.props.keyprop, event.target.value);
-    },
-    render: function() {
-        return rel('input',
-            {
-                type: "text",
-                // placeholder: "New Dance"
-                value: this.props.value,
-                onChange: this.handleChange
-            });
-    }
+const TextField = (props) => rel('input', {
+    type: "text",
+    placeholder: props.placeholder,
+    value: props.value,
+    onChange: props.onChange
 });
 
 var Dropdown = React.createClass({
@@ -168,9 +160,11 @@ export function App(props) {
 
   };
 
-  const figures = mori.toJs(mori.getIn(appState, ['dances', currentDance, 'figures'])) || [],
+  const dances = mori.toJs(mori.get(appState, 'dances')),
+        figures = mori.toJs(mori.getIn(appState, ['dances', currentDance, 'figures'])) || [],
         figureTypes = mori.toJs(mori.get(appState, 'figureTypes')),
         figureTypesKeys = Object.keys(figureTypes);
+
     log('figs', figures);
 
     // console.log('figureTypesKeys', figureTypesKeys);
@@ -184,11 +178,9 @@ export function App(props) {
     });
 
   const danceTitle = rel(TextField, {
-        keyprop: "dance-title",
-        value: currentDance,
-        onInput: (event) => {
-            setDanceProperty('dance-title', event.target)
-        }
+        value: dances[currentDance] ? dances[currentDance].title : '',
+        placeholder: 'Untitled Dance',
+        onChange: (event) => setDanceProperty('title', event.target.value)
     });
 
   const figureButtons = rel('ul',
@@ -241,12 +233,12 @@ export function App(props) {
         {
             className: 'dance_list'
         },
-        ...mori.map(mori.get(appState, 'dances'), (dance, index) => {
+        ...Object.keys(dances).map((key, index) => {
             return rel('li',
                 {
                     className: 'dance_list_item'
                 },
-                dance.title
+                dances[key].title
             );
         })
     );
