@@ -1,3 +1,5 @@
+import mori from 'mori';
+
 // toBe is ===
 // toEqual is recursively checking values in arrays and objects
 
@@ -14,5 +16,20 @@ test('addFigure action function', () => {
     expect(result).toEqual({
         type: "ADD_FIGURE",
         payload: 'data'
-    })
+    });
+});
+
+import { getStartEnd } from '../src/reducers';
+
+var figures = mori.toClj([
+    { type: 'Circle', direction: 'Left', duration: 8 },
+    { type: 'Swing', who: 'partners', duration: 16 },
+    { type: 'Allemande', direction: 'Left', who: 'neighbors', duration: 8, howFar: 1.5 }
+]);
+
+test('getStartEnd function', (figures) => {
+    let result = getStartEnd(figures, 8);
+    expect(result).toEqual(
+        mori.hashMap('startBeat', 33, 'endBeat', 40)
+    );
 });
