@@ -8,11 +8,12 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-      addFigure: data => dispatch(addFigure(data)),
-      modifyFigure: data => dispatch(modifyFigure(data)),
-      deleteFigure: data => dispatch(deleteFigure(data)),
-      addNewDance: data => dispatch(addNewDance()),
-      setDanceProperty: (prop, value) => dispatch(setDanceProperty(prop, value))
+        dispatchAction: action => dispatch(dispatchAction(action)),
+        addFigure: data => dispatch(addFigure(data)),
+        modifyFigure: data => dispatch(modifyFigure(data)),
+        deleteFigure: data => dispatch(deleteFigure(data)),
+        addNewDance: data => dispatch(addNewDance()),
+        setDanceProperty: (prop, value) => dispatch(setDanceProperty(prop, value))
     };
 };
 

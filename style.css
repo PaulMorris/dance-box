@@ -12,16 +12,19 @@ li {
 .figure_button_list {
     margin: 20px 0;
 }
-.figure_button {
-    border: 0px solid grey;
-    padding: 4px 10px;
-    margin: 4px;
-    background: white;
-    border-radius: 4px;
+.figure_button_li {
+    /* border: 0px solid grey; */
+    padding: 4px 0px;
+    margin: 4px 0px;
+    /* background: white; */
+    /* border-radius: 4px; */
     display: inline-block;
 }
+.button {
+    cursor: pointer;
+}
 .figure_item_li {
-    border: 0px solid grey;
+    /* border: 0px solid grey; */
     padding: 4px 10px;
     margin: 4px;
     background: white;
@@ -29,7 +32,8 @@ li {
 }
 .delete_figure_button {
     display: inline-block;
-    border: 1px solid rgb(200, 200, 200);
-    border-radius: 4px;
-    padding: 4px 8px;
+    /* border: 1px solid rgb(200, 200, 200); */
+    /* border-radius: 4px; */
+    padding: 0.5px 4px;
+    cursor: pointer;
 }

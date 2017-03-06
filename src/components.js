@@ -5,7 +5,7 @@ import mori from 'mori';
 const log = (...args) => console.log(...args.map(mori.toJs));
 
 // convert 'string representations of numbers' (like html menu values)
-// to numbers if possible or just return the string.
+// to numbers, if possible, or just return the string.
 var numberify = (val) => {
     let n = Number(val);
     return n ? n : val;
@@ -15,8 +15,7 @@ export function Button(props) {
     // console.log(props);
     // const { mb } = props;
     return rel('div', null, props.text);
-    // <div>{props.text}</div>;
-}
+};
 
 const TextField = (props) => rel('input', {
     type: "text",
@@ -56,45 +55,40 @@ React.createElement(Dropdown, {
 
 export function Menu(props) {
     // console.log('menu', props);
-    let { type, options, value, keyProp, className, modifyFigure, figureIndex } = props;
-    let itemToOption = item => rel('option', {value: item.value}, item.label); // <option value={item}>{item}</option>;
-
-    let handleChange = event => modifyFigure({
-        type: type,
-        figureIndex: figureIndex,
-        keyProp: keyProp,
-        value: numberify(event.target.value)
-    });
-
-    return rel('select',
-        {
+    const { options, value, className, handleChange } = props;
+    let toOption = item => rel('option', {
+            value: item.value
+        },
+        item.label
+    );
+    return rel('select', {
             className: className,
-            name: "usercard",
-            // TODO: better naming needed...
             value: value.value,
             onChange: handleChange
+            // name: ""
         },
-        ...options.map(itemToOption)
+        ...options.map(toOption)
     );
-}
+};
 
 export function FigureItem(props) {
-    const {danceFigure, typeData, modifyFigure, figureIndex, deleteFigure} = props,
+    const { figure, typeData, modifyFigure, figureIndex, deleteFigure } = props,
 
         arraysOnly = key => Array.isArray(typeData[key]),
 
         toMenu = key => {
             // let val = danceFigure[key].value;
-            return rel(Menu,
-                {
-                    type: danceFigure.type,
-                    options: typeData[key],
-                    value: danceFigure[key],
+            return rel(Menu, {
+                options: typeData[key],
+                value: figure[key],
+                className: "figure_item_select",
+                handleChange: event => modifyFigure({
+                    type: figure.type,
+                    figureIndex: figureIndex,
                     keyProp: key,
-                    className: "figure_item_select",
-                    modifyFigure: modifyFigure,
-                    figureIndex: figureIndex
-                });
+                    value: numberify(event.target.value)
+                })
+            });
         },
 
         handleDelete = event => deleteFigure({
@@ -106,25 +100,49 @@ export function FigureItem(props) {
     // console.log('figureItem', menus, danceFigure, typeData);
 
     return rel('div', null,
-        danceFigure.type + '  ',
+        figure.type + '  ',
         ...menus,
-        rel('div',
-            {
+        rel('input', {
+                type: 'button',
                 onClick: handleDelete,
-                className: "delete_figure_button"
-            },
-            'X'
-    ),
-    ' ', danceFigure.startBeat, ' - ', danceFigure.endBeat
+                className: "delete_figure_button",
+                value: 'X'
+            }
+        ),
+        ' ', figure.startBeat, ' - ', figure.endBeat
     );
 }
 
+export function FigureList(props) {
+    const { figures, figureTypes, modifyFigure, deleteFigure } = props;
+
+    return rel('ul', {
+        className: 'figure_list'
+    },
+    ...figures.map((fig, index) => {
+        let typeData = figureTypes[fig.type];
+        // console.log('figureTypes2', figureTypes);
+        // console.log('typeData', type, typeData);
+
+        return rel('li', {
+                key: fig + index,
+                className: 'figure_item_li'
+            },
+            rel(FigureItem, {
+                figure: fig,
+                typeData: typeData,
+                modifyFigure: modifyFigure,
+                deleteFigure: deleteFigure,
+                figureIndex: index
+            })
+        );
+    }));
+};
 
 var getFigureDefaults = (figureTypeData) => {
-    let keys = Object.keys(figureTypeData);
     // let result = keys.map(key => figureTypeData[key].filter(obj => obj['default'] || false));
     let result = {};
-    keys.forEach(key => {
+    Object.keys(figureTypeData).forEach(key => {
         let variations = figureTypeData[key];
         let defaultInArray = variations.filter(obj => obj['default']);
         result[key] = defaultInArray[0];
@@ -134,41 +152,107 @@ var getFigureDefaults = (figureTypeData) => {
     return result;
 };
 
+export function FigureButtons(props) {
+    const { figureTypes, addFigure } = props;
+
+    const figureButtonClick = (figName, figData, addFigure) => event => {
+        // console.log('figureButtonClick', figureTypeData, event);
+        let danceFigure = getFigureDefaults(figData);
+        danceFigure.type = figName;
+        return addFigure(danceFigure);
+    };
+
+    return rel('ul', {
+            className: 'figure_button_list'
+        },
+        ...Object.keys(figureTypes).map(figName => {
+            let figData = figureTypes[figName];
+            // add the type to the data itself
+            return rel('li', {
+                    key: figName,
+                    className: 'figure_button_li'
+                },
+                rel('input', {
+                    type: 'button',
+                    value: figName,
+                    className: 'button',
+                    onClick: figureButtonClick(figName, figData, addFigure)
+                })
+            );
+        })
+    );
+};
+
+export function DanceList(props) {
+    const { dances } = props;
+    return rel('ul', {
+        className: 'dance_list'
+    },
+    ...Object.keys(dances).map((key, index) => {
+        return rel('li', {
+                className: 'dance_list_item'
+            },
+            dances[key].title
+        );
+    }));
+}
+
 export function App(props) {
-  log("PROPS appState", props.appState, props);
+    log("PROPS appState", props.appState, props);
+    const {
+        appState,
+        addFigure,
+        modifyFigure,
+        deleteFigure,
+        addNewDance,
+        setDanceProperty
+    } = props;
 
-  const { appState, addFigure, modifyFigure, deleteFigure, addNewDance, setDanceProperty } = props;
-
-  const currentDance = mori.get(appState, 'currentDance');
-
-  const figureButtonClick = (figureTypeData, figureName) => event => {
-      console.log('figureButtonClick', figureTypeData, event);
-
-      let danceFigure = getFigureDefaults(figureTypeData);
-      danceFigure.type = figureName;
-      return addFigure(danceFigure);
-  };
-
-  const onSimpleInput = (event) => {
-    // console.log("onSimpleInput", event);
-    const input = event.target;
-    const text = input.value;
-    console.log(text, input);
-    const id = input.id;
-
-    // const isEnterKey = (event.which == 13);
-
-  };
-
-  const dances = mori.toJs(mori.get(appState, 'dances')),
+    const currentDance = mori.get(appState, 'currentDance'),
+        dances = mori.toJs(mori.get(appState, 'dances')),
         figures = mori.toJs(mori.getIn(appState, ['dances', currentDance, 'figures'])) || [],
-        figureTypes = mori.toJs(mori.get(appState, 'figureTypes')),
-        figureTypesKeys = Object.keys(figureTypes);
+        figureTypes = mori.toJs(mori.get(appState, 'figureTypes'));
 
-    log('figs', figures);
+    return rel('div', {
+            className: 'app_wrapper'
+        },
 
-    // console.log('figureTypesKeys', figureTypesKeys);
+        // dance title
+        rel(TextField, {
+            value: dances[currentDance] ? dances[currentDance].title : '',
+            placeholder: 'Untitled Dance',
+            onChange: (event) => setDanceProperty('title', event.target.value)
+        }),
 
+        // figure buttons
+        rel(FigureButtons, {
+            figureTypes: figureTypes,
+            addFigure: addFigure
+        }),
+
+        rel(FigureList, {
+            figures: figures,
+            figureTypes: figureTypes,
+            modifyFigure: modifyFigure,
+            deleteFigure: deleteFigure
+        }),
+
+        // new dance button
+        rel('input', {
+            type: 'button',
+            value: 'New Dance',
+            className: 'button',
+            onClick: addNewDance
+        }),
+
+        // dance list
+        rel(DanceList, {
+            dances: dances
+        })
+    );
+}
+
+/*
   const danceTitleOld = rel('input', {
         type: 'text',
         id: 'dance-title',
@@ -176,89 +260,15 @@ export function App(props) {
         placeholder: 'Dance Title...',
         onKeyUp: onSimpleInput
     });
+*/
 
-  const danceTitle = rel(TextField, {
-        value: dances[currentDance] ? dances[currentDance].title : '',
-        placeholder: 'Untitled Dance',
-        onChange: (event) => setDanceProperty('title', event.target.value)
-    });
-
-  const figureButtons = rel('ul',
-    {
-        className: 'figure_button_list'
-    },
-    ...figureTypesKeys.map(typeName => {
-          let typeData = figureTypes[typeName];
-          // add the type to the data itself
-          // typeData['type'] = k;
-          return rel('li',
-            {
-                key: typeName,
-                className: 'figure_button',
-                onClick: figureButtonClick(typeData, typeName)
-            },
-            rel(Button, {text: typeName})
-        );
-    }))
-
-    const figureList = rel('ul',
-        {
-            className: 'figure_list'
-        },
-        ...figures.map((danceFigure, index) => {
-
-            // console.log('figureTypes2', figureTypes);
-
-            let typeData = figureTypes[danceFigure.type];
-
-            // console.log('typeData', type, typeData);
-
-            return rel('li',
-                {
-                    key: danceFigure + index,
-                    className: 'figure_item_li'
-                },
-                rel(FigureItem,
-                    {
-                        danceFigure: danceFigure,
-                        typeData: typeData,
-                        modifyFigure: modifyFigure,
-                        deleteFigure: deleteFigure,
-                        figureIndex: index
-                    })
-                );
-        }));
-
-    const danceList = rel('ul',
-        {
-            className: 'dance_list'
-        },
-        ...Object.keys(dances).map((key, index) => {
-            return rel('li',
-                {
-                    className: 'dance_list_item'
-                },
-                dances[key].title
-            );
-        })
-    );
-
-    const newDanceButton = rel('div',
-        {
-            className: 'new_dance_button',
-            onClick: addNewDance
-        },
-        'New Dance!'
-    );
-
-  return rel('div',
-      {
-          className: 'app_wrapper'
-      },
-      danceTitle,
-      figureButtons,
-      figureList,
-      newDanceButton,
-      danceList
-  );
-}
+/*
+    const onSimpleInput = (event) => {
+        // console.log("onSimpleInput", event);
+        const input = event.target;
+        const text = input.value;
+        console.log(text, input);
+        const id = input.id;
+        // const isEnterKey = (event.which == 13);
+    };
+*/

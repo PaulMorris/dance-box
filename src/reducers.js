@@ -186,16 +186,11 @@ export default function(state = initialState, action) {
             figures = mori.getIn(state, ['dances', currentDance, 'figures']),
             oneLessFigure = vectorRemove(figures, figureIndex),
             newFigures = refreshStartsEnds(oneLessFigure),
-            // toUpdate = newFigures.slice(figureIndex);
             result = mori.assocIn(state, ['dances', currentDance, 'figures'], newFigures);
         // console.log('DELETE result', mori.toJs(mori.getIn(result, ['dances', mori.get(state, 'currentDance'), 'figures'])));
         return result;
 
-
     } else if ('ADD_NEW_DANCE' === action.type) {
-        // let dances = mori.toJs(mori.get(state, 'dances'));
-        // let newDances = mori.toClj(Object.assign({}, dances, {'foo': emptyDance}));
-
         let dances = mori.get(state, 'dances');
         let id = uid();
         let newDances = mori.conj(dances, mori.hashMap(id, mori.toClj(emptyDance)));
