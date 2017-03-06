@@ -38,6 +38,7 @@ const oneToSixPlaces = [
 const initialState = mori.toClj({
   dances: {},
   currentDance: '',
+  danceDataTypes: {},
   figureTypes: {
       Circle: {
           direction: [
@@ -119,7 +120,7 @@ const initialState = mori.toClj({
   }
 });
 
-var getStartEnd = (figures, duration) => {
+export var getStartEnd = (figures, duration) => {
     let lastFig = mori.last(figures),
         prevEndBeat = lastFig ? mori.get(lastFig, 'endBeat') : 0;
     return mori.hashMap('startBeat', prevEndBeat + 1, 'endBeat', prevEndBeat + duration);
@@ -160,6 +161,7 @@ export default function(state = initialState, action) {
             duration = mori.getIn(figureDefaults, ['duration', 'value']),
             currentDance = mori.get(state, 'currentDance'),
             figures = mori.getIn(state, ['dances', currentDance, 'figures']),
+            // TODO: modify swing defaults (who, duration) if preceded by a balance
             newFig = mori.merge(figureDefaults, getStartEnd(figures, duration)),
             newFigs = mori.conj(figures, newFig),
             newState = mori.assocIn(state, ['dances', currentDance, 'figures'], newFigs);
@@ -203,6 +205,11 @@ export default function(state = initialState, action) {
     } else if ('SET_DANCE_PROPERTY' === action.type) {
         let currentDance = mori.get(state, 'currentDance');
         return mori.assocIn(state, ['dances', currentDance, action.payload.prop], action.payload.value);
+
+    } else if ('EDIT_DANCE' === action.type) {
+        console.log('payload', action.payload);
+        let id = action.payload;
+        return mori.assoc(state, 'currentDance', id);
 
     } else {
         return state;

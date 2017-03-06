@@ -24,6 +24,7 @@ const TextField = (props) => rel('input', {
     onChange: props.onChange
 });
 
+/*
 var Dropdown = React.createClass({
     handleChange: function(event) {
         this.props.onInput(this.props.keyprop, event.target.value);
@@ -43,6 +44,7 @@ var Dropdown = React.createClass({
         }));
     }
 });
+*/
 
 /*
 React.createElement(Dropdown, {
@@ -184,7 +186,7 @@ export function FigureButtons(props) {
 };
 
 export function DanceList(props) {
-    const { dances } = props;
+    const { dances, editDance } = props;
     return rel('ul', {
         className: 'dance_list'
     },
@@ -192,7 +194,16 @@ export function DanceList(props) {
         return rel('li', {
                 className: 'dance_list_item'
             },
-            dances[key].title
+            dances[key].title,
+            ' by ',
+            dances[key].authors,
+            ' ',
+            rel('a', {
+                    onClick: editDance.bind(null, key),
+                    className: 'link'
+                },
+                'Edit'
+            )
         );
     }));
 }
@@ -205,7 +216,8 @@ export function App(props) {
         modifyFigure,
         deleteFigure,
         addNewDance,
-        setDanceProperty
+        setDanceProperty,
+        editDance
     } = props;
 
     const currentDance = mori.get(appState, 'currentDance'),
@@ -222,6 +234,14 @@ export function App(props) {
             value: dances[currentDance] ? dances[currentDance].title : '',
             placeholder: 'Untitled Dance',
             onChange: (event) => setDanceProperty('title', event.target.value)
+        }),
+
+        // authors
+        ' by ',
+        rel(TextField, {
+            value: dances[currentDance] ? dances[currentDance].authors : '',
+            placeholder: 'Authors',
+            onChange: (event) => setDanceProperty('authors', event.target.value)
         }),
 
         // figure buttons
@@ -247,7 +267,8 @@ export function App(props) {
 
         // dance list
         rel(DanceList, {
-            dances: dances
+            dances: dances,
+            editDance: editDance
         })
     );
 }

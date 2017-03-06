@@ -35,3 +35,10 @@ export function setDanceProperty(prop, value) {
         payload: {prop: prop, value: value}
     }
 }
+
+export function editDance(id) {
+    return {
+        type: 'EDIT_DANCE',
+        payload: id
+    }
+}

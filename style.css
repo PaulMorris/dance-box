@@ -9,6 +9,12 @@ ul {
 li {
     list-style: none;
 }
+a {
+    color: blue;
+    text-decoration: underline;
+}
+
+/* FIGURE BUTTONS */
 .figure_button_list {
     margin: 20px 0;
 }
@@ -23,6 +29,11 @@ li {
 .button {
     cursor: pointer;
 }
+
+/* FIGURE LIST */
+.figure_list {
+    margin-bottom: 30px;
+}
 .figure_item_li {
     /* border: 0px solid grey; */
     padding: 4px 10px;
@@ -36,4 +47,9 @@ li {
     /* border-radius: 4px; */
     padding: 0.5px 4px;
     cursor: pointer;
+}
+
+/* DANCE LIST */
+.dance_list {
+    margin: 20px 0px;
 }
