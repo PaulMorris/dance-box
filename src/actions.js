@@ -36,6 +36,13 @@ export function setDanceProperty(prop, value) {
     }
 }
 
+export function setDanceMenuProperty(prop, value) {
+    return {
+        type: 'SET_DANCE_MENU_PROPERTY',
+        payload: {prop: prop, value: value}
+    }
+}
+
 export function editDance(id) {
     return {
         type: 'EDIT_DANCE',

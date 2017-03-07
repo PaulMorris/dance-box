@@ -1,6 +1,7 @@
 import React from 'react';
 const rel = React.createElement;
 import mori from 'mori';
+import { getDefaultsFromArrayOfObjects } from './utilities';
 
 const log = (...args) => console.log(...args.map(mori.toJs));
 
@@ -141,25 +142,12 @@ export function FigureList(props) {
     }));
 };
 
-var getFigureDefaults = (figureTypeData) => {
-    // let result = keys.map(key => figureTypeData[key].filter(obj => obj['default'] || false));
-    let result = {};
-    Object.keys(figureTypeData).forEach(key => {
-        let variations = figureTypeData[key];
-        let defaultInArray = variations.filter(obj => obj['default']);
-        result[key] = defaultInArray[0];
-    });
-
-    console.log('result', result);
-    return result;
-};
-
 export function FigureButtons(props) {
     const { figureTypes, addFigure } = props;
 
     const figureButtonClick = (figName, figData, addFigure) => event => {
         // console.log('figureButtonClick', figureTypeData, event);
-        let danceFigure = getFigureDefaults(figData);
+        let danceFigure = getDefaultsFromArrayOfObjects(figData);
         danceFigure.type = figName;
         return addFigure(danceFigure);
     };
@@ -183,6 +171,30 @@ export function FigureButtons(props) {
             );
         })
     );
+};
+
+export function DanceMenus(props) {
+    const { setDanceMenuProperty, currentDanceData, danceMenusData } = props,
+
+        arraysOnly = key => Array.isArray(danceMenusData[key]),
+
+        toMenu = key => {
+            return rel(Menu, {
+                    options: danceMenusData[key],
+                    // TODO: handle initialization better
+                    value: currentDanceData[key] || '',
+                    className: "dance_data_menu",
+                    handleChange: event => setDanceMenuProperty(key, numberify(event.target.value))
+                }
+            );
+        },
+
+        menus = Object.keys(danceMenusData).filter(arraysOnly).map(toMenu);
+
+        log('currentDanceData', currentDanceData);
+    // console.log('figureItem', menus, danceFigure, typeData);
+
+    return rel('div', null, ...menus);
 };
 
 export function DanceList(props) {
@@ -217,13 +229,16 @@ export function App(props) {
         deleteFigure,
         addNewDance,
         setDanceProperty,
+        setDanceMenuProperty,
         editDance
     } = props;
 
     const currentDance = mori.get(appState, 'currentDance'),
         dances = mori.toJs(mori.get(appState, 'dances')),
+        // TODO: handle initialization better
         figures = mori.toJs(mori.getIn(appState, ['dances', currentDance, 'figures'])) || [],
-        figureTypes = mori.toJs(mori.get(appState, 'figureTypes'));
+        figureTypes = mori.toJs(mori.get(appState, 'figureTypes')),
+        danceMenusData = mori.toJs(mori.get(appState, 'danceMenusData'));
 
     return rel('div', {
             className: 'app_wrapper'
@@ -242,6 +257,14 @@ export function App(props) {
             value: dances[currentDance] ? dances[currentDance].authors : '',
             placeholder: 'Authors',
             onChange: (event) => setDanceProperty('authors', event.target.value)
+        }),
+
+        // dance menus
+        rel(DanceMenus, {
+            setDanceMenuProperty: setDanceMenuProperty,
+            // TODO: handle initialization better
+            currentDanceData: dances[currentDance] || [],
+            danceMenusData: danceMenusData
         }),
 
         // figure buttons

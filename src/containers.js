@@ -6,6 +6,7 @@ import {
     deleteFigure,
     addNewDance,
     setDanceProperty,
+    setDanceMenuProperty,
     editDance
 } from './actions';
 
@@ -21,6 +22,7 @@ function mapDispatchToProps(dispatch) {
         deleteFigure: data => dispatch(deleteFigure(data)),
         addNewDance: data => dispatch(addNewDance()),
         setDanceProperty: (prop, value) => dispatch(setDanceProperty(prop, value)),
+        setDanceMenuProperty: (prop, value) => dispatch(setDanceMenuProperty(prop, value)),
         editDance: id => dispatch(editDance(id))
     };
 };

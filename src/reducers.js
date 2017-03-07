@@ -1,51 +1,83 @@
 import mori from 'mori';
+import { getDefaultsFromArrayOfObjects } from './utilities';
 
 // succinct hack for generating passable unique ids
 const uid = () => Math.random().toString(34).slice(2);
 
 const log = (...args) => console.log(...args.map(mori.toJs));
 
-// dance title is the key
-const emptyDance = {
-    title: '',
-    authors: '',
-    type: 'Contra',
-    form: 'Improper',
-    formation: 'Duple Minor',
-    progression: 'Single',
-    level: 'Beginner',
-    notesMusic: 'Reels not Jigs',
-    notesCalling: 'Just do it',
-    notesTeaching: 'End effects!',
-    notesOther: 'Written on a train',
-    rating: 5,
-    figures: [
-        // { type: 'circle', direction: 'Left', duration: 8 },
-        // { type: 'swing', who: 'partners' },
-        // { type: 'allemande', direction: 'Left', who: 'neighbors', duration: 8, howFar: 1.5 }
-    ]
-};
-
-const oneToSixPlaces = [
-    {value: 1, label: '1 Place'},
-    {value: 2, label: '2 Places'},
-    {value: 3, label: '3 Places'},
-    {value: 4, label: '4 Places', default: true},
-    {value: 5, label: '5 Places'},
-    {value: 6, label: '6 Places'}
-];
-
 const initialState = mori.toClj({
   dances: {},
   currentDance: '',
-  danceDataTypes: {},
+  danceMenusData: {
+      type: [
+          {value: 'Contra', label: 'Contra', default: true},
+          {value: 'Square', label: 'Square'},
+          {value: 'CircleMixer', label: 'Circle Mixer'},
+          {value: 'ScatterMixer', label: 'Scatter Mixer'},
+          {value: 'Longways', label: 'Longways'},
+          {value: 'ECD', label: 'English Country'},
+          {value: 'Other', label: 'Other'}
+      ],
+      form: [
+          {value: 'Improper', label: 'Improper', default: true},
+          {value: 'Proper', label: 'Proper'},
+          {value: 'Becket', label: 'Becket'},
+          {value: 'Indecent', label: 'Indecent'}
+      ],
+      formation: [
+          {value: 'Duple Minor', label: 'Duple Minor', default: true},
+          {value: 'Triple Minor', label: 'Triple Minor'},
+          {value: 'Triplet', label: 'Triplet'},
+          {value: 'Quadruplet', label: 'Quadruplet'},
+          {value: 'FourFacingFour', label: 'Four Facing Four'},
+          {value: 'Tempest', label: 'Tempest'},
+          {value: 'Square', label: 'Square'},
+          {value: 'Break', label: 'Break'},
+          {value: 'Other', label: 'Other'}
+      ],
+      progression: [
+          {value: 1, label: 'Single Progression', default: true},
+          {value: 2, label: 'Double Progression'},
+          {value: 3, label: 'Triple Progression'},
+          {value: 4, label: 'Quadruple Progression'}
+      ],
+      level: [
+          {value: 'unsetLevel', label: 'Level Unset', default: true},
+          {value: 'Beginner', label: 'Beginner Level'},
+          {value: 'Novice', label: 'Novice Level'},
+          {value: 'Intermediate', label: 'Intermediate Level'},
+          {value: 'Advanced', label: 'Advanced Level'}
+      ],
+      mixedLevel: [
+          {value: 'mixedLevelUnset', label: 'Mixed Level Unset', default: true},
+          {value: 'mixedLevelFriendly', label: 'Mixed Level Friendly'},
+          {value: 'mixedLevelUnfriendly', label: 'Mixed Level Unfriendly'}
+      ],
+      rating: [
+          {value: '', label: 'Rating Unset', default: true},
+          {value: 1, label: 'Rating: 1'},
+          {value: 2, label: 'Rating: 2'},
+          {value: 3, label: 'Rating: 3'},
+          {value: 4, label: 'Rating: 4'},
+          {value: 5, label: 'Rating: 5'}
+      ]
+  },
+
   figureTypes: {
       Circle: {
           direction: [
               {value: 'Left', label: 'Left', default: true},
               {value: 'Right', label: 'Right'}
           ],
-          howFar: oneToSixPlaces,
+          howFar: [
+              {value: 1, label: '1 Place'},
+              {value: 2, label: '2 Places'},
+              {value: 3, label: '3 Places'},
+              {value: 4, label: '4 Places', default: true},
+              {value: 5, label: '5 Places'},
+              {value: 6, label: '6 Places'}
+          ],
           duration: [
               {value: 4, label: 'For 4 Beats'},
               {value: 8, label: 'For 8 Beats', default: true},
@@ -58,7 +90,14 @@ const initialState = mori.toClj({
               {value: 'Left', label: 'Left', default: true},
               {value: 'Right', label: 'Right'}
           ],
-          howFar: oneToSixPlaces,
+          howFar: [
+              {value: 1, label: '1 Place'},
+              {value: 2, label: '2 Places'},
+              {value: 3, label: '3 Places'},
+              {value: 4, label: '4 Places', default: true},
+              {value: 5, label: '5 Places'},
+              {value: 6, label: '6 Places'}
+          ],
           hands: [
               {value: 'Wrist', label: 'Wrist Style', default: true},
               {value: 'HandsAcross', label: 'Hands Across Style'}
@@ -120,6 +159,26 @@ const initialState = mori.toClj({
   }
 });
 
+const makeDefaultDance = (danceMenusData) => {
+    let menuDefaults = getDefaultsFromArrayOfObjects(mori.toJs(danceMenusData)),
+        nonMenuDefaults = {
+            title: '',
+            authors: '',
+            notesMusic: '',
+            notesCalling: '',
+            notesTeaching: '',
+            notesOther: '',
+            figures: [
+                // just for reference...
+                // { type: 'circle', direction: 'Left', duration: 8 },
+                // { type: 'swing', who: 'partners' },
+                // { type: 'allemande', direction: 'Left', who: 'neighbors', duration: 8, howFar: 1.5 }
+            ]
+        },
+        result = Object.assign({}, menuDefaults, nonMenuDefaults);
+    return result;
+}
+
 export var getStartEnd = (figures, duration) => {
     let lastFig = mori.last(figures),
         prevEndBeat = lastFig ? mori.get(lastFig, 'endBeat') : 0;
@@ -169,11 +228,9 @@ export default function(state = initialState, action) {
 
     } else if ('MODIFY_FIGURE' === action.type) {
         let {type, figureIndex, keyProp, value} = action.payload,
-
             currentDance = mori.get(state, 'currentDance'),
             figures = mori.getIn(state, ['dances', currentDance, 'figures']),
 
-            propDefaults = mori.getIn(state, ['figureTypes', type, keyProp]),
             label = mori.get(mori.some(item => mori.equals(value, mori.get(item, 'value'))), 'value'),
             valueLabel = mori.hashMap('value', value, 'label', label),
 
@@ -193,18 +250,30 @@ export default function(state = initialState, action) {
         return result;
 
     } else if ('ADD_NEW_DANCE' === action.type) {
-        let dances = mori.get(state, 'dances');
-        let id = uid();
-        let newDances = mori.conj(dances, mori.hashMap(id, mori.toClj(emptyDance)));
+        let dances = mori.get(state, 'dances'),
+            id = uid(),
+            danceMenusData = mori.get(state, 'danceMenusData'),
+            newDances = mori.conj(dances, mori.hashMap(id, mori.toClj(makeDefaultDance(danceMenusData)))),
 
-        // TODO: this could be more elegant?
-        let state1 = mori.assoc(state, 'dances', newDances);
-        let state2 = mori.assoc(state1, 'currentDance', id);
+            // TODO: this might be more elegant?
+            state1 = mori.assoc(state, 'dances', newDances),
+            state2 = mori.assoc(state1, 'currentDance', id);
         return state2;
 
     } else if ('SET_DANCE_PROPERTY' === action.type) {
-        let currentDance = mori.get(state, 'currentDance');
-        return mori.assocIn(state, ['dances', currentDance, action.payload.prop], action.payload.value);
+        let {prop, value} = action.payload,
+            currentDance = mori.get(state, 'currentDance');
+        return mori.assocIn(state, ['dances', currentDance, prop], value);
+
+    } else if ('SET_DANCE_MENU_PROPERTY' === action.type) {
+        let {prop, value} = action.payload,
+            currentDance = mori.get(state, 'currentDance'),
+
+            label = mori.get(mori.some(item => mori.equals(value, mori.get(item, 'value'))), 'value'),
+            valueLabel = mori.hashMap('value', value, 'label', label),
+            newState = mori.assocIn(state, ['dances', currentDance, prop], valueLabel);
+        return newState;
+
 
     } else if ('EDIT_DANCE' === action.type) {
         console.log('payload', action.payload);
