@@ -1,51 +1,38 @@
 
+// figures
 
-export function addFigure(data) {
-    console.log("ADD_FIGURE", data);
-    return {
-        type: 'ADD_FIGURE',
-        payload: data
-    };
-}
+export const addFigure = (data) => ({
+    type: 'ADD_FIGURE',
+    payload: data
+});
 
-export function modifyFigure(data) {
-    console.log("modifyFigure", data);
-    return {
-        type: 'MODIFY_FIGURE',
-        payload: data
-    };
-}
+export const modifyFigure = (data) => ({
+    type: 'MODIFY_FIGURE',
+    payload: data
+});
 
-export function deleteFigure(data) {
-    return {
-        type: 'DELETE_FIGURE',
-        payload: data
-    };
-}
+export const deleteFigure = (data) => ({
+    type: 'DELETE_FIGURE',
+    payload: data
+});
 
-export function addNewDance() {
-    return {
-        type: 'ADD_NEW_DANCE'
-    };
-}
+// dances
 
-export function setDanceProperty(prop, value) {
-    return {
-        type: 'SET_DANCE_PROPERTY',
-        payload: {prop: prop, value: value}
-    }
-}
+export const addNewDance = () => ({
+    type: 'ADD_NEW_DANCE'
+});
 
-export function setDanceMenuProperty(prop, value) {
-    return {
-        type: 'SET_DANCE_MENU_PROPERTY',
-        payload: {prop: prop, value: value}
-    }
-}
+export const editDance = (id) => ({
+    type: 'EDIT_DANCE',
+    payload: id
+});
 
-export function editDance(id) {
-    return {
-        type: 'EDIT_DANCE',
-        payload: id
-    }
-}
+export const setDanceProperty = (prop, value) => ({
+    type: 'SET_DANCE_PROPERTY',
+    payload: {prop: prop, value: value}
+});
+
+export const setDanceMenuProperty = (prop, value) => ({
+    type: 'SET_DANCE_MENU_PROPERTY',
+    payload: {prop: prop, value: value}
+});
