@@ -66,7 +66,7 @@ export default function(state = mori.toClj(initialState), action) {
         // console.log("state in reducer", state);
         let figureDefaults = mori.toClj(action.payload),
             duration = mori.getIn(figureDefaults, ['duration', 'value']),
-            currentDance = mori.get(state, 'currentDance'),
+            currentDance = mori.getIn(state, ['uiState', 'currentDance']),
             figures = mori.getIn(state, ['dances', currentDance, 'figures']),
             // TODO: modify swing defaults (who, duration) if preceded by a balance
             newFig = mori.merge(figureDefaults, getStartEnd(figures, duration)),
@@ -76,7 +76,7 @@ export default function(state = mori.toClj(initialState), action) {
 
     } else if ('MODIFY_FIGURE' === action.type) {
         let {type, figureIndex, keyProp, value} = action.payload,
-            currentDance = mori.get(state, 'currentDance'),
+            currentDance = mori.getIn(state, ['uiState', 'currentDance']),
             figures = mori.getIn(state, ['dances', currentDance, 'figures']),
 
             label = mori.get(mori.some(item => mori.equals(value, mori.get(item, 'value'))), 'value'),
@@ -89,12 +89,12 @@ export default function(state = mori.toClj(initialState), action) {
 
     } else if ('DELETE_FIGURE' === action.type) {
         let figureIndex = action.payload.figureIndex,
-            currentDance = mori.get(state, 'currentDance'),
+            currentDance = mori.getIn(state, ['uiState', 'currentDance']),
             figures = mori.getIn(state, ['dances', currentDance, 'figures']),
             oneLessFigure = vectorRemove(figures, figureIndex),
             newFigures = refreshStartsEnds(oneLessFigure),
             result = mori.assocIn(state, ['dances', currentDance, 'figures'], newFigures);
-        // console.log('DELETE result', mori.toJs(mori.getIn(result, ['dances', mori.get(state, 'currentDance'), 'figures'])));
+        // console.log('DELETE result', mori.toJs(mori.getIn(result, ['dances', mori.getIn(state, ['uiState', 'currentDance']), 'figures'])));
         return result;
 
     } else if ('ADD_NEW_DANCE' === action.type) {
@@ -105,29 +105,28 @@ export default function(state = mori.toClj(initialState), action) {
 
             // TODO: this might be more elegant?
             state1 = mori.assoc(state, 'dances', newDances),
-            state2 = mori.assoc(state1, 'currentDance', id),
+            state2 = mori.assocIn(state1, ['uiState', 'currentDance'], id),
             state3 = mori.assocIn(state2, ['uiState', 'mode'], 'editDance');
         return state3;
 
     } else if ('SET_DANCE_PROPERTY' === action.type) {
         let {prop, value} = action.payload,
-            currentDance = mori.get(state, 'currentDance');
+            currentDance = mori.getIn(state, ['uiState', 'currentDance']);
         return mori.assocIn(state, ['dances', currentDance, prop], value);
 
     } else if ('SET_DANCE_MENU_PROPERTY' === action.type) {
         let {prop, value} = action.payload,
-            currentDance = mori.get(state, 'currentDance'),
+            currentDance = mori.getIn(state, ['uiState', 'currentDance']),
 
             label = mori.get(mori.some(item => mori.equals(value, mori.get(item, 'value'))), 'value'),
             valueLabel = mori.hashMap('value', value, 'label', label),
             newState = mori.assocIn(state, ['dances', currentDance, prop], valueLabel);
         return newState;
 
-
     } else if ('EDIT_DANCE' === action.type) {
         console.log('payload', action.payload);
         let id = action.payload;
-        let state1 = mori.assoc(state, 'currentDance', id);
+        let state1 = mori.assocIn(state, ['uiState', 'currentDance'], id);
         let state2 = mori.assocIn(state1, ['uiState', 'mode'], 'editDance');
         return state2;
 

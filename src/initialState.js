@@ -1,10 +1,10 @@
 export const initialState = {
   uiState: {
       // mode can be dances or editDance
-      mode: 'dances'
+      mode: 'dances',
+      currentDance: ''
   },
   dances: {},
-  currentDance: '',
   danceMenusData: {
       type: [
           {value: 'Contra', label: 'Contra', default: true},

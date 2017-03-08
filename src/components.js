@@ -246,7 +246,7 @@ export function App(props) {
     } = props;
 
     const uiState = mori.toJs(mori.get(appState, 'uiState')),
-        currentDance = mori.get(appState, 'currentDance'),
+        currentDance = mori.getIn(appState, ['uiState', 'currentDance']),
         dances = mori.toJs(mori.get(appState, 'dances')),
         // TODO: handle initialization better
         figures = mori.toJs(mori.getIn(appState, ['dances', currentDance, 'figures'])) || [],
