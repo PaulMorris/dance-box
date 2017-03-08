@@ -1,9 +1,7 @@
 import mori from 'mori';
 import { getDefaultsFromArrayOfObjects } from './utilities';
 import { initialState } from './initialState';
-
-// succinct hack for generating passable unique ids
-const uid = () => Math.random().toString(34).slice(2);
+import uuid from 'node-uuid';
 
 const log = (...args) => console.log(...args.map(mori.toJs));
 
@@ -99,7 +97,7 @@ export default function(state = mori.toClj(initialState), action) {
 
     } else if ('ADD_NEW_DANCE' === action.type) {
         let dances = mori.get(state, 'dances'),
-            id = uid(),
+            id = uuid.v4(),
             danceMenusData = mori.get(state, 'danceMenusData'),
             newDances = mori.conj(dances, mori.hashMap(id, mori.toClj(makeDefaultDance(danceMenusData)))),
 
