@@ -120,7 +120,8 @@ export const initialState = {
       Balance: {
           who: [
               {value: 'Partner', label: 'Partner', default: true},
-              {value: 'Neighbor', label: 'Neighbor'}
+              {value: 'Neighbor', label: 'Neighbor'},
+              {value: 'TheRing', label: 'The Ring'}
           ],
           duration: [
               {value: 4, label: 'For 4 Beats', default: true}
@@ -217,6 +218,119 @@ export const initialState = {
               {value: 8, label: 'For 8 Beats', default: true}
           ]
       },
-
+      'California Twirl': {
+          who: [
+              {value: 'Partner', label: 'Partner', default: true},
+              {value: 'Neighbor', label: 'Neighbor'},
+              {value: 'Gents', label: 'Gents'},
+              {value: 'Ladies', label: 'Ladies'},
+              {value: 'Ones', label: 'Ones'},
+              {value: 'Twos', label: 'Twos'}
+          ],
+          duration: [
+              {value: 4, label: 'For 4 Beats', default: true}
+          ]
+      },
+      'Do Si Do': {
+          who: [
+              {value: 'Partner', label: 'Partner', default: true},
+              {value: 'Neighbor', label: 'Neighbor'},
+              {value: 'Gents', label: 'Gents'},
+              {value: 'Ladies', label: 'Ladies'},
+              {value: 'Ones', label: 'Ones'},
+              {value: 'Twos', label: 'Twos'}
+          ],
+          howFar: [
+              {value: 1.0, label: 'Once Around', default: true},
+              {value: 1.25, label: 'Once and a Quarter'},
+              {value: 1.5, label: 'Once and a Half'},
+              {value: 1.75, label: 'Once and Three Quarters'},
+              {value: 2.0, label: 'Twice Around'}
+          ],
+          duration: [
+              {value: 4, label: 'For 4 Beats', default: true},
+              {value: 8, label: 'For 8 Beats'},
+              {value: 12, label: 'For 12 Beats'},
+              {value: 16, label: 'For 16 Beats'}
+          ]
+      },
+      'Box the Gnat': {
+          who: [
+              {value: 'Partner', label: 'Partner', default: true},
+              {value: 'Neighbor', label: 'Neighbor'},
+              {value: 'Gents', label: 'Gents'},
+              {value: 'Ladies', label: 'Ladies'},
+              {value: 'Ones', label: 'Ones'},
+              {value: 'Twos', label: 'Twos'}
+          ],
+          duration: [
+              {value: 4, label: 'For 4 Beats', default: true}
+          ]
+      },
+      'Roll Away': {
+          halfSashay: [
+              {value: 'halfSashay', label: 'With a Half Sashay', default: true},
+              {value: 'noHalfSashay', label: 'Without a Half Sashay'}
+          ],
+          who: [
+              {value: 'Partner', label: 'Partner', default: true},
+              {value: 'Neighbor', label: 'Neighbor'},
+              {value: 'Gents', label: 'Gents'},
+              {value: 'Ladies', label: 'Ladies'},
+              {value: 'Ones', label: 'Ones'},
+              {value: 'Twos', label: 'Twos'}
+          ],
+          whoRollsWho: [
+              {value: 'GentsRollLadies', label: 'Gents Roll Ladies', default: true},
+              {value: 'LadiesRollGents', label: 'Ladies Roll Gents'},
+              {value: 'GentsRollGents', label: 'Gents Roll Gents'},
+              {value: 'LadiesRollLadies', label: 'Ladies Roll Ladies'}
+          ],
+          duration: [
+              {value: 4, label: 'For 4 Beats', default: true}
+          ]
+      },
+      'Give and Take': {
+          who: [
+              {value: 'GentsTake', label: 'Gents Take', default: true},
+              {value: 'LadiesTake', label: 'Ladies Take'}
+          ],
+          duration: [
+              {value: 8, label: 'For 8 Beats', default: true}
+          ]
+      },
+      'Pass Through': {
+          direction: [
+              {value: 'Across', label: 'Across the Set', default: true},
+              {value: 'UpDown', label: 'Up and Down the Set'},
+              {value: 'LeftDiagonal', label: 'On Left Diagonal'},
+              {value: 'RightDiagonal', label: 'On Right Diagonal'}
+          ],
+          duration: [
+              {value: 4, label: 'For 4 Beats', default: true}
+          ]
+      },
+      'Hey': {
+          howFar: [
+              {value: 1, label: 'Full Hey', default: true},
+              {value: 0.5, label: 'Half Hey'}
+          ],
+          who: [
+              {value: 'LadiesStart', label: 'Ladies Start', default: true},
+              {value: 'GentsStart', label: 'Gents Start'}
+          ],
+          passing: [
+              {value: 'PassingRight', label: 'By Passing Right', default: true},
+              {value: 'PassingLeft', label: 'By Passing Left'}
+          ],
+          style: [
+              {value: 'Standard', label: 'Standard Hey', default: true},
+              {value: 'Ricochet', label: 'Ricochet Hey'}
+          ],
+          duration: [
+              {value: 8, label: 'For 8 Beats'},
+              {value: 16, label: 'For 16 Beats', default: true}
+          ]
+      }
   }
 };
