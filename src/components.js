@@ -22,6 +22,7 @@ const TextField = (props) => rel('input', {
     type: "text",
     placeholder: props.placeholder,
     value: props.value,
+    className: props.className,
     onChange: props.onChange
 });
 
@@ -105,14 +106,22 @@ export function FigureItem(props) {
     return rel('div', null,
         figure.type + '  ',
         ...menus,
-        rel('input', {
-                type: 'button',
-                onClick: handleDelete,
-                className: "delete_figure_button",
-                value: 'X'
-            }
-        ),
-        ' ', figure.startBeat, ' - ', figure.endBeat
+        rel('span', {
+                className: 'figure_item_right'
+            },
+            rel('span', {
+                    className: 'start_end_beats'
+                },
+                figure.startBeat, ' - ', figure.endBeat, ' '
+            ),
+            rel('input', {
+                    type: 'button',
+                    onClick: handleDelete,
+                    className: "delete_figure_button",
+                    value: 'X'
+                }
+            )
+        )
     );
 }
 
@@ -194,7 +203,9 @@ export function DanceMenus(props) {
         log('currentDanceData', currentDanceData);
     // console.log('figureItem', menus, danceFigure, typeData);
 
-    return rel('div', null, ...menus);
+    return rel('div', {
+        className: 'dance_menus'
+    }, ...menus);
 };
 
 export function DanceList(props) {
@@ -230,71 +241,108 @@ export function App(props) {
         addNewDance,
         setDanceProperty,
         setDanceMenuProperty,
-        editDance
+        editDance,
+        switchUiMode
     } = props;
 
-    const currentDance = mori.get(appState, 'currentDance'),
+    const uiState = mori.toJs(mori.get(appState, 'uiState')),
+        currentDance = mori.get(appState, 'currentDance'),
         dances = mori.toJs(mori.get(appState, 'dances')),
         // TODO: handle initialization better
         figures = mori.toJs(mori.getIn(appState, ['dances', currentDance, 'figures'])) || [],
         figureTypes = mori.toJs(mori.get(appState, 'figureTypes')),
         danceMenusData = mori.toJs(mori.get(appState, 'danceMenusData'));
 
-    return rel('div', {
-            className: 'app_wrapper'
-        },
+    if (uiState.mode === 'dances') {
+        return rel('div', {
+                className: 'app_wrapper'
+            },
 
-        // dance title
-        rel(TextField, {
-            value: dances[currentDance] ? dances[currentDance].title : '',
-            placeholder: 'Untitled Dance',
-            onChange: (event) => setDanceProperty('title', event.target.value)
-        }),
+            // screen title
+            rel('h1', null, 'Dances'),
 
-        // authors
-        ' by ',
-        rel(TextField, {
-            value: dances[currentDance] ? dances[currentDance].authors : '',
-            placeholder: 'Authors',
-            onChange: (event) => setDanceProperty('authors', event.target.value)
-        }),
+            // new dance button
+            rel('input', {
+                type: 'button',
+                value: 'New Dance',
+                className: 'button',
+                onClick: addNewDance
+            }),
 
-        // dance menus
-        rel(DanceMenus, {
-            setDanceMenuProperty: setDanceMenuProperty,
-            // TODO: handle initialization better
-            currentDanceData: dances[currentDance] || [],
-            danceMenusData: danceMenusData
-        }),
+            // dance list
+            rel(DanceList, {
+                dances: dances,
+                editDance: editDance
+            })
+        );
 
-        // figure buttons
-        rel(FigureButtons, {
-            figureTypes: figureTypes,
-            addFigure: addFigure
-        }),
+    } else if (uiState.mode === 'editDance') {
+        return rel('div', {
+                className: 'app_wrapper'
+            },
 
-        rel(FigureList, {
-            figures: figures,
-            figureTypes: figureTypes,
-            modifyFigure: modifyFigure,
-            deleteFigure: deleteFigure
-        }),
+            // back to dances list
 
-        // new dance button
-        rel('input', {
-            type: 'button',
-            value: 'New Dance',
-            className: 'button',
-            onClick: addNewDance
-        }),
+            rel('div', null,
+                rel('a', {
+                        onClick: switchUiMode.bind(null, 'dances'),
+                        className: 'link'
+                    },
+                    '<< Back to Dances List'
+                ),
+            ),
 
-        // dance list
-        rel(DanceList, {
-            dances: dances,
-            editDance: editDance
-        })
-    );
-}
+            rel('h1', null, 'Edit Dance'),
+
+            // dance title and authors
+            rel('div', {
+                    className: 'dance_title_author'
+                },
+                rel(TextField, {
+                    value: dances[currentDance] ? dances[currentDance].title : '',
+                    placeholder: 'Untitled Dance',
+                    className: 'dance_title_text_field',
+                    onChange: (event) => setDanceProperty('title', event.target.value)
+                }),
+
+                // authors
+                ' by ',
+                rel(TextField, {
+                    value: dances[currentDance] ? dances[currentDance].authors : '',
+                    placeholder: 'Authors',
+                    className: 'dance_authors_text_field',
+                    onChange: (event) => setDanceProperty('authors', event.target.value)
+                }),
+            ),
+
+            // dance menus
+            rel(DanceMenus, {
+                setDanceMenuProperty: setDanceMenuProperty,
+                // TODO: handle initialization better
+                currentDanceData: dances[currentDance] || [],
+                danceMenusData: danceMenusData
+            }),
+
+            rel('h3', null, 'Figures'),
+
+            // figure buttons
+            rel(FigureButtons, {
+                figureTypes: figureTypes,
+                addFigure: addFigure
+            }),
+
+            rel(FigureList, {
+                figures: figures,
+                figureTypes: figureTypes,
+                modifyFigure: modifyFigure,
+                deleteFigure: deleteFigure
+            }),
+        );
+
+    } else {
+        return rel('h1', 'Oops!');
+    }
+};
 
 /*
   const danceTitleOld = rel('input', {

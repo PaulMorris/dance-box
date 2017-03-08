@@ -1,4 +1,11 @@
 
+// ui state
+
+export const switchUiMode = (newMode) => ({
+    type: 'SWITCH_UI_MODE',
+    payload: newMode
+});
+
 // figures
 
 export const addFigure = (data) => ({

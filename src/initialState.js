@@ -1,4 +1,8 @@
 export const initialState = {
+  uiState: {
+      // mode can be dances or editDance
+      mode: 'dances'
+  },
   dances: {},
   currentDance: '',
   danceMenusData: {
@@ -8,7 +12,7 @@ export const initialState = {
           {value: 'CircleMixer', label: 'Circle Mixer'},
           {value: 'ScatterMixer', label: 'Scatter Mixer'},
           {value: 'Longways', label: 'Longways'},
-          {value: 'ECD', label: 'English Country'},
+          {value: 'EnglishCountry', label: 'English Country'},
           {value: 'Other', label: 'Other'}
       ],
       form: [
@@ -147,6 +151,72 @@ export const initialState = {
               {value: 12, label: 'For 12 Beats'},
               {value: 16, label: 'For 16 Beats'}
           ]
-      }
+      },
+      'Chain': {
+          who: [
+              {value: 'Ladies', label: 'Ladies', default: true},
+              {value: 'Gents', label: 'Gents'}
+          ],
+          direction: [
+              {value: 'Across', label: 'Across the Set', default: true},
+              {value: 'Side', label: 'Side of the Set'},
+              {value: 'LeftDiagonal', label: 'Left Diagonal'},
+              {value: 'RightDiagonal', label: 'Right Diagonal'}
+          ],
+          duration: [
+              {value: 4, label: 'For 4 Beats', default: true}
+          ]
+      },
+      'Courtesy Turn': {
+          who: [
+              {value: 'Partner', label: 'Partner', default: true},
+              {value: 'Neighbor', label: 'Neighbor'}
+          ],
+          duration: [
+              {value: 4, label: 'For 4 Beats', default: true}
+          ]
+      },
+      'Long Lines F & B': {
+          duration: [
+              {value: 8, label: 'For 8 Beats', default: true}
+          ]
+      },
+      'Right and Left Through': {
+          duration: [
+              {value: 8, label: 'For 8 Beats', default: true}
+          ]
+      },
+      'Promenade': {
+          who: [
+              {value: 'Partner', label: 'Partner', default: true},
+              {value: 'Neighbor', label: 'Neighbor'}
+          ],
+          direction: [
+              {value: 'Across', label: 'Across the Set', default: true},
+              {value: 'Side', label: 'Side of Set'},
+              {value: 'LeftDiagonal', label: 'Left Diagonal'},
+              {value: 'RightDiagonal', label: 'Right Diagonal'}
+          ],
+          duration: [
+              {value: 4, label: 'For 4 Beats', default: true},
+              {value: 8, label: 'For 8 Beats'},
+              {value: 12, label: 'For 12 Beats'},
+              {value: 16, label: 'For 16 Beats'}
+          ]
+      },
+      'Figure Eight': {
+          who: [
+              {value: 'Ones', label: 'Ones', default: true},
+              {value: 'Twos', label: 'Twos',}
+          ],
+          direction: [
+              {value: 'Above', label: 'Above', default: true},
+              {value: 'Below', label: 'Below'}
+          ],
+          duration: [
+              {value: 8, label: 'For 8 Beats', default: true}
+          ]
+      },
+
   }
 };

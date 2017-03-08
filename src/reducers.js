@@ -105,8 +105,9 @@ export default function(state = mori.toClj(initialState), action) {
 
             // TODO: this might be more elegant?
             state1 = mori.assoc(state, 'dances', newDances),
-            state2 = mori.assoc(state1, 'currentDance', id);
-        return state2;
+            state2 = mori.assoc(state1, 'currentDance', id),
+            state3 = mori.assocIn(state2, ['uiState', 'mode'], 'editDance');
+        return state3;
 
     } else if ('SET_DANCE_PROPERTY' === action.type) {
         let {prop, value} = action.payload,
@@ -126,7 +127,13 @@ export default function(state = mori.toClj(initialState), action) {
     } else if ('EDIT_DANCE' === action.type) {
         console.log('payload', action.payload);
         let id = action.payload;
-        return mori.assoc(state, 'currentDance', id);
+        let state1 = mori.assoc(state, 'currentDance', id);
+        let state2 = mori.assocIn(state1, ['uiState', 'mode'], 'editDance');
+        return state2;
+
+    } else if ('SWITCH_UI_MODE' === action.type) {
+        let newMode = action.payload;
+        return mori.assocIn(state, ['uiState', 'mode'], newMode);
 
     } else {
         return state;
