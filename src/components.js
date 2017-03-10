@@ -209,7 +209,7 @@ export function DanceMenus(props) {
 };
 
 export function DanceList(props) {
-    const { dances, editDance } = props;
+    const { dances, editDance, deleteDance } = props;
     return rel('ul', {
         className: 'dance_list'
     },
@@ -226,7 +226,14 @@ export function DanceList(props) {
                     className: 'link'
                 },
                 'Edit'
-            )
+            ),
+            ' ',
+            rel('a', {
+                    onClick: deleteDance.bind(null, key),
+                    className: 'link'
+                },
+                'Delete'
+            ),
         );
     }));
 }
@@ -242,6 +249,7 @@ export function App(props) {
         setDanceProperty,
         setDanceMenuProperty,
         editDance,
+        deleteDance,
         switchUiMode
     } = props;
 
@@ -272,7 +280,8 @@ export function App(props) {
             // dance list
             rel(DanceList, {
                 dances: dances,
-                editDance: editDance
+                editDance: editDance,
+                deleteDance: deleteDance
             })
         );
 

@@ -33,8 +33,8 @@ a {
 }
 .figure_button_li {
     /* border: 0px solid grey; */
-    padding: 4px 0px;
-    margin: 4px 0px;
+    padding: 0px 0px;
+    margin: 0px 0px;
     /* border-radius: 4px; */
     display: inline-block;
 }
@@ -70,6 +70,10 @@ a {
 /* DANCE LIST */
 .dance_list {
     margin: 20px 0px;
+}
+.dance_list_item {
+    font-size: 23px;
+    margin: 10px 0;
 }
 
 .link {

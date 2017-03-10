@@ -127,7 +127,7 @@ export const initialState = {
               {value: 4, label: 'For 4 Beats', default: true}
           ]
       },
-      Allemande: {
+      'Allemande': {
           who: [
               {value: 'Partner', label: 'Partner', default: true},
               {value: 'Neighbor', label: 'Neighbor'},

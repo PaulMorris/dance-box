@@ -34,6 +34,11 @@ export const editDance = (id) => ({
     payload: id
 });
 
+export const deleteDance = (id) => ({
+    type: 'DELETE_DANCE',
+    payload: id
+})
+
 export const setDanceProperty = (prop, value) => ({
     type: 'SET_DANCE_PROPERTY',
     payload: {prop: prop, value: value}

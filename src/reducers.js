@@ -56,6 +56,12 @@ const mergeIn = (coll, path, incoming) => mori.updateIn(
     target => mori.merge(target, incoming)
 );
 
+const removeIn = (coll, path, key) => {
+    let someMap = mori.getIn(coll, path);
+    let poppedPath = mori.pop(path);
+    return mori.assocIn(coll, poppedPath, someMap);
+};
+
 export default function(state = mori.toClj(initialState), action) {
     log('reducer', action, state);
 
@@ -127,6 +133,13 @@ export default function(state = mori.toClj(initialState), action) {
         let state1 = mori.assocIn(state, ['uiState', 'currentDance'], id);
         let state2 = mori.assocIn(state1, ['uiState', 'mode'], 'editDance');
         return state2;
+
+    } else if ('DELETE_DANCE' === action.type) {
+        let id = action.payload;
+        let dances = mori.get(state, 'dances');
+        let newDances = mori.dissoc(dances, id);
+        let newState = mori.assoc(state, 'dances', newDances);
+        return newState;
 
     } else if ('SWITCH_UI_MODE' === action.type) {
         let newMode = action.payload;

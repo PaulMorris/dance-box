@@ -8,6 +8,7 @@ import {
     setDanceProperty,
     setDanceMenuProperty,
     editDance,
+    deleteDance,
     switchUiMode
 } from './actions';
 
@@ -25,6 +26,7 @@ function mapDispatchToProps(dispatch) {
         setDanceProperty: (prop, value) => dispatch(setDanceProperty(prop, value)),
         setDanceMenuProperty: (prop, value) => dispatch(setDanceMenuProperty(prop, value)),
         editDance: id => dispatch(editDance(id)),
+        deleteDance: id => dispatch(deleteDance(id)),
         switchUiMode: newMode => dispatch(switchUiMode(newMode))
     };
 };
