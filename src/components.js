@@ -72,16 +72,25 @@ const FigureItem = (props) => {
             options: props.typeData[key],
             value: props.figure[key],
             className: "figure_item_select",
-            handleChange: event => props.modifyFigure({
-                type: props.figure.type,
-                figureIndex: props.figureIndex,
-                keyProp: key,
-                value: numberify(event.target.value)
-            })
+            handleChange: event => {
+                props.dispatch({
+                    type: 'MODIFY_FIGURE',
+                    payload: {
+                        type: props.figure.type,
+                        figureIndex: props.figureIndex,
+                        keyProp: key,
+                        value: numberify(event.target.value)
+                    }
+                })
+            }
         });
 
-    const handleDelete = event => props.deleteFigure({
-        figureIndex: props.figureIndex
+    const handleDelete = event => props.dispatch({
+        type: 'DELETE_FIGURE',
+        // TODO: nesting not needed
+        payload: {
+            figureIndex: props.figureIndex
+        }
     });
 
     const menus = Object.keys(props.typeData).filter(arraysOnly).map(toMenu);
@@ -117,10 +126,9 @@ const FigureList = (props) => {
                 className: 'figure_item_li'
             },
             rel(FigureItem, {
+                dispatch: props.dispatch,
                 figure: fig,
                 typeData: props.figureTypes[fig.type],
-                modifyFigure: props.modifyFigure,
-                deleteFigure: props.deleteFigure,
                 figureIndex: index
             })
         );
@@ -134,11 +142,14 @@ const FigureList = (props) => {
 
 const FigureButtons = (props) => {
 
-    const figureButtonClick = (figName, figData, addFigure) => event => {
+    const makeFigureButtonClick = (figName, figData, addFigure) => event => {
         // console.log('figureButtonClick', figureTypeData, event);
         let danceFigure = getDefaultsFromArrayOfObjects(figData);
         danceFigure.type = figName;
-        return addFigure(danceFigure);
+        return props.dispatch({
+            type: 'ADD_FIGURE',
+            payload: danceFigure
+        });
     };
 
     const figNameToLi = (figName) => {
@@ -151,7 +162,7 @@ const FigureButtons = (props) => {
                 type: 'button',
                 value: figName,
                 className: 'button',
-                onClick: figureButtonClick(figName, figData, props.addFigure)
+                onClick: makeFigureButtonClick(figName, figData, props.addFigure)
             })
         );
     };
@@ -173,7 +184,12 @@ const DanceMenus = (props) => {
                     // TODO: handle initialization better
                     value: props.currentDanceData[key] || '',
                     className: "dance_data_menu",
-                    handleChange: event => props.setDanceMenuProperty(key, numberify(event.target.value))
+                    handleChange: event => {
+                        props.dispatch({
+                            type: 'SET_DANCE_MENU_PROPERTY',
+                            payload: {prop: key, value: numberify(event.target.value)}
+                        })
+                    }
                 });
 
     const menus = Object.keys(props.danceMenusData).filter(arraysOnly).map(toMenu);
@@ -199,15 +215,21 @@ const DanceList = (props) => {
             props.dances[key].authors,
             ' ',
             rel('a', {
-                    onClick: props.editDance.bind(null, key),
-                    className: 'link'
+                    className: 'link',
+                    onClick: props.dispatch.bind(null, {
+                        type: 'EDIT_DANCE',
+                        payload: key
+                    })
                 },
                 'Edit'
             ),
             ' ',
             rel('a', {
-                    onClick: props.deleteDance.bind(null, key),
-                    className: 'link'
+                    className: 'link',
+                    onClick: props.dispatch.bind(null, {
+                        type: 'DELETE_DANCE',
+                        payload: key
+                    })
                 },
                 'Delete'
             ),
@@ -233,14 +255,16 @@ const DancesScreen = (props) => rel('div', {
         type: 'button',
         value: 'New Dance',
         className: 'button',
-        onClick: props.addNewDance
+        onClick: props.dispatch.bind(null, {
+            type: 'ADD_NEW_DANCE'
+        })
     }),
 
     // dance list
     rel(DanceList, {
-        dances: props.dances,
-        editDance: props.editDance,
-        deleteDance: props.deleteDance
+        dispatch: props.dispatch,
+        dances: props.dances
+
     })
 );
 
@@ -251,7 +275,10 @@ const EditDanceScreen = (props) => rel('div', {
     // "back to dances list" link
     rel('div', null,
         rel('a', {
-                onClick: props.switchUiMode.bind(null, 'dances'),
+                onClick: props.dispatch.bind(null, {
+                        type: 'SWITCH_UI_MODE',
+                        payload: 'dances'
+                    }),
                 className: 'link'
             },
             '<< Back to Dances List'
@@ -268,7 +295,12 @@ const EditDanceScreen = (props) => rel('div', {
             value: props.dances[props.currentDance] ? props.dances[props.currentDance].title : '',
             placeholder: 'Untitled Dance',
             className: 'dance_title_text_field',
-            onChange: (event) => props.setDanceProperty('title', event.target.value)
+            onChange: event => {
+                props.dispatch({
+                    type: 'SET_DANCE_PROPERTY',
+                    payload: {prop: 'title', value: event.target.value}
+                })
+            }
         }),
 
         // authors
@@ -277,13 +309,18 @@ const EditDanceScreen = (props) => rel('div', {
             value: props.dances[props.currentDance] ? props.dances[props.currentDance].authors : '',
             placeholder: 'Author(s)',
             className: 'dance_authors_text_field',
-            onChange: (event) => props.setDanceProperty('authors', event.target.value)
+            onChange: event => {
+                props.dispatch({
+                    type: 'SET_DANCE_PROPERTY',
+                    payload: {prop: 'authors', value: event.target.value}
+                })
+            }
         }),
     ),
 
     // dance menus
     rel(DanceMenus, {
-        setDanceMenuProperty: props.setDanceMenuProperty,
+        dispatch: props.dispatch,
         // TODO: handle initialization better
         currentDanceData: props.dances[props.currentDance] || [],
         danceMenusData: props.danceMenusData
@@ -293,15 +330,14 @@ const EditDanceScreen = (props) => rel('div', {
 
     // figure buttons
     rel(FigureButtons, {
-        figureTypes: props.figureTypes,
-        addFigure: props.addFigure
+        dispatch: props.dispatch,
+        figureTypes: props.figureTypes
     }),
 
     rel(FigureList, {
+        dispatch: props.dispatch,
         figures: props.figures,
-        figureTypes: props.figureTypes,
-        modifyFigure: props.modifyFigure,
-        deleteFigure: props.deleteFigure
+        figureTypes: props.figureTypes
     }),
 );
 
@@ -313,23 +349,13 @@ export const App = (props) => {
 
     if (uiState.mode === 'dances') {
         return rel(DancesScreen, {
-            addNewDance: props.addNewDance,
-            editDance: props.editDance,
-            deleteDance: props.deleteDance,
+            dispatch: props.dispatch,
             dances: dances
         });
 
     } else if (uiState.mode === 'editDance') {
         return rel(EditDanceScreen, {
-            switchUiMode: props.switchUiMode,
-
-            setDanceProperty: props.setDanceProperty,
-            setDanceMenuProperty: props.setDanceMenuProperty,
-
-            addFigure: props.addFigure,
-            modifyFigure: props.modifyFigure,
-            deleteFigure: props.deleteFigure,
-
+            dispatch: props.dispatch,
             dances: dances,
             currentDance: uiState.currentDance,
             figures: dances[uiState.currentDance].figures,
