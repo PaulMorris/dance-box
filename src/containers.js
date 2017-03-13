@@ -13,7 +13,7 @@ import {
 } from './actions';
 
 function mapStateToProps(state) {
-    return { appState: state };
+    return { state: state };
 };
 
 function mapDispatchToProps(dispatch) {

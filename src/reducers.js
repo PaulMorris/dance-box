@@ -27,12 +27,12 @@ const makeDefaultDance = (danceMenusData) => {
 
 export var getStartEnd = (figures, duration) => {
     let lastFig = mori.last(figures),
-        prevEndBeat = lastFig ? mori.get(lastFig, 'endBeat') : 0;
-    return mori.hashMap('startBeat', prevEndBeat + 1, 'endBeat', prevEndBeat + duration);
+        prevEndBeat = lastFig ? mori.get(lastFig, 'endBeat') : 0,
+        result = mori.hashMap('startBeat', prevEndBeat + 1, 'endBeat', prevEndBeat + duration);
+    return result;
 };
 
 var refreshStartsEnds = (figures) => {
-    // log('before', figures);
     let updateStartEnd = (result, fig) => {
         let duration = mori.getIn(fig, ['duration', 'value']),
             startEnd = getStartEnd(result, duration),
@@ -40,7 +40,6 @@ var refreshStartsEnds = (figures) => {
         return newFig;
     };
     let newFigs = mori.reduce(updateStartEnd, mori.vector(), figures);
-    // log('after', newFigs);
     return newFigs;
 };
 

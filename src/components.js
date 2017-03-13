@@ -12,9 +12,7 @@ var numberify = (val) => {
     return n ? n : val;
 };
 
-export function Button(props) {
-    // console.log(props);
-    // const { mb } = props;
+const Button = (props) => {
     return rel('div', null, props.text);
 };
 
@@ -26,85 +24,47 @@ const TextField = (props) => rel('input', {
     onChange: props.onChange
 });
 
-/*
-var Dropdown = React.createClass({
-    handleChange: function(event) {
-        this.props.onInput(this.props.keyprop, event.target.value);
-    },
-    render: function() {
-        return React.DOM.select({
-            value: this.props.value,
-            onChange: this.handleChange
-        }, this.props.options.map((option, index) => {
-            return React.DOM.option({
-                // could use option[0] here instead of index...
-                key: this.props.keyprop + "Option" + index,
-                onChange: this.handleChange,
-                value: option[0],
-                disabled: this.props.disabled || false
-            }, option[1]);
-        }));
-    }
-});
-*/
-
-/*
-React.createElement(Dropdown, {
-    keyprop: "repeat",
-    value: this.state.repeat,
-    options: this.props.repeatList,
-    onInput: this.handleSimpleChange
-}),
-*/
-
-export function Menu(props) {
-    // console.log('menu', props);
-    const { options, value, className, handleChange } = props;
+const Menu = (props) => {
     let toOption = item => rel('option', {
             value: item.value
         },
         item.label
     );
     return rel('select', {
-            className: className,
-            value: value.value,
-            onChange: handleChange
-            // name: ""
+            className: props.className,
+            // note: 'value.value' is not a typo
+            value: props.value.value,
+            onChange: props.handleChange
         },
-        ...options.map(toOption)
+        ...props.options.map(toOption)
     );
 };
 
-export function FigureItem(props) {
-    const { figure, typeData, modifyFigure, figureIndex, deleteFigure } = props,
+const FigureItem = (props) => {
+    const arraysOnly = key => Array.isArray(props.typeData[key]);
 
-        arraysOnly = key => Array.isArray(typeData[key]),
+    const toMenu = key => rel(Menu, {
+            options: props.typeData[key],
+            value: props.figure[key],
+            className: "figure_item_select",
+            handleChange: event => props.modifyFigure({
+                type: props.figure.type,
+                figureIndex: props.figureIndex,
+                keyProp: key,
+                value: numberify(event.target.value)
+            })
+        });
 
-        toMenu = key => {
-            // let val = danceFigure[key].value;
-            return rel(Menu, {
-                options: typeData[key],
-                value: figure[key],
-                className: "figure_item_select",
-                handleChange: event => modifyFigure({
-                    type: figure.type,
-                    figureIndex: figureIndex,
-                    keyProp: key,
-                    value: numberify(event.target.value)
-                })
-            });
-        },
+    const handleDelete = event => props.deleteFigure({
+        figureIndex: props.figureIndex
+    });
 
-        handleDelete = event => deleteFigure({
-            figureIndex: figureIndex
-        }),
+    const menus = Object.keys(props.typeData).filter(arraysOnly).map(toMenu);
 
-        menus = Object.keys(typeData).filter(arraysOnly).map(toMenu);
-
-    // console.log('figureItem', menus, danceFigure, typeData);
+    // console.log('figureItem', menus, danceFigure, props.typeData);
 
     return rel('div', null,
-        figure.type + '  ',
+        props.figure.type + '  ',
         ...menus,
         rel('span', {
                 className: 'figure_item_right'
@@ -112,7 +72,7 @@ export function FigureItem(props) {
             rel('span', {
                     className: 'start_end_beats'
                 },
-                figure.startBeat, ' - ', figure.endBeat, ' '
+                props.figure.startBeat, ' - ', props.figure.endBeat, ' '
             ),
             rel('input', {
                     type: 'button',
@@ -125,34 +85,29 @@ export function FigureItem(props) {
     );
 }
 
-export function FigureList(props) {
-    const { figures, figureTypes, modifyFigure, deleteFigure } = props;
+const FigureList = (props) => {
 
-    return rel('ul', {
-        className: 'figure_list'
-    },
-    ...figures.map((fig, index) => {
-        let typeData = figureTypes[fig.type];
-        // console.log('figureTypes2', figureTypes);
-        // console.log('typeData', type, typeData);
-
-        return rel('li', {
+    const figToLi = (fig, index) => rel('li', {
                 key: fig + index,
                 className: 'figure_item_li'
             },
             rel(FigureItem, {
                 figure: fig,
-                typeData: typeData,
-                modifyFigure: modifyFigure,
-                deleteFigure: deleteFigure,
+                typeData: props.figureTypes[fig.type],
+                modifyFigure: props.modifyFigure,
+                deleteFigure: props.deleteFigure,
                 figureIndex: index
             })
         );
-    }));
+
+    return rel('ul', {
+            className: 'figure_list'
+        },
+        ...props.figures.map(figToLi)
+    );
 };
 
-export function FigureButtons(props) {
-    const { figureTypes, addFigure } = props;
+const FigureButtons = (props) => {
 
     const figureButtonClick = (figName, figData, addFigure) => event => {
         // console.log('figureButtonClick', figureTypeData, event);
@@ -161,105 +116,96 @@ export function FigureButtons(props) {
         return addFigure(danceFigure);
     };
 
+    const figNameToLi = (figName) => {
+        let figData = props.figureTypes[figName];
+        return rel('li', {
+                key: figName,
+                className: 'figure_button_li'
+            },
+            rel('input', {
+                type: 'button',
+                value: figName,
+                className: 'button',
+                onClick: figureButtonClick(figName, figData, props.addFigure)
+            })
+        );
+    };
+
+    const figItems = Object.keys(props.figureTypes).map(figNameToLi);
+
     return rel('ul', {
             className: 'figure_button_list'
         },
-        ...Object.keys(figureTypes).map(figName => {
-            let figData = figureTypes[figName];
-            // add the type to the data itself
-            return rel('li', {
-                    key: figName,
-                    className: 'figure_button_li'
-                },
-                rel('input', {
-                    type: 'button',
-                    value: figName,
-                    className: 'button',
-                    onClick: figureButtonClick(figName, figData, addFigure)
-                })
-            );
-        })
+        ...figItems
     );
 };
 
-export function DanceMenus(props) {
-    const { setDanceMenuProperty, currentDanceData, danceMenusData } = props,
+const DanceMenus = (props) => {
+    const arraysOnly = key => Array.isArray(props.danceMenusData[key]);
 
-        arraysOnly = key => Array.isArray(danceMenusData[key]),
-
-        toMenu = key => {
-            return rel(Menu, {
-                    options: danceMenusData[key],
+    const toMenu = key => rel(Menu, {
+                    options: props.danceMenusData[key],
                     // TODO: handle initialization better
-                    value: currentDanceData[key] || '',
+                    value: props.currentDanceData[key] || '',
                     className: "dance_data_menu",
-                    handleChange: event => setDanceMenuProperty(key, numberify(event.target.value))
-                }
-            );
-        },
+                    handleChange: event => props.setDanceMenuProperty(key, numberify(event.target.value))
+                });
 
-        menus = Object.keys(danceMenusData).filter(arraysOnly).map(toMenu);
+    const menus = Object.keys(props.danceMenusData).filter(arraysOnly).map(toMenu);
 
-        log('currentDanceData', currentDanceData);
+    // log('currentDanceData', props.currentDanceData);
     // console.log('figureItem', menus, danceFigure, typeData);
 
     return rel('div', {
-        className: 'dance_menus'
-    }, ...menus);
+            className: 'dance_menus'
+        },
+        ...menus
+    );
 };
 
-export function DanceList(props) {
-    const { dances, editDance, deleteDance } = props;
-    return rel('ul', {
-        className: 'dance_list'
-    },
-    ...Object.keys(dances).map((key, index) => {
+const DanceList = (props) => {
+
+    const danceItems = Object.keys(props.dances).map((key, index) => {
         return rel('li', {
                 className: 'dance_list_item'
             },
-            dances[key].title,
+            props.dances[key].title,
             ' by ',
-            dances[key].authors,
+            props.dances[key].authors,
             ' ',
             rel('a', {
-                    onClick: editDance.bind(null, key),
+                    onClick: props.editDance.bind(null, key),
                     className: 'link'
                 },
                 'Edit'
             ),
             ' ',
             rel('a', {
-                    onClick: deleteDance.bind(null, key),
+                    onClick: props.deleteDance.bind(null, key),
                     className: 'link'
                 },
                 'Delete'
             ),
         );
-    }));
+    });
+
+    return rel('ul', {
+            className: 'dance_list'
+        },
+        ...danceItems
+    );
 }
 
-export function App(props) {
-    log("PROPS appState", props.appState, props);
-    const {
-        appState,
-        addFigure,
-        modifyFigure,
-        deleteFigure,
-        addNewDance,
-        setDanceProperty,
-        setDanceMenuProperty,
-        editDance,
-        deleteDance,
-        switchUiMode
-    } = props;
+export const App = (props) => {
+    log("props.state then props", props.state, props);
 
-    const uiState = mori.toJs(mori.get(appState, 'uiState')),
-        currentDance = mori.getIn(appState, ['uiState', 'currentDance']),
-        dances = mori.toJs(mori.get(appState, 'dances')),
+    const uiState = mori.toJs(mori.get(props.state, 'uiState')),
+        currentDance = mori.getIn(props.state, ['uiState', 'currentDance']),
+        dances = mori.toJs(mori.get(props.state, 'dances')),
         // TODO: handle initialization better
-        figures = mori.toJs(mori.getIn(appState, ['dances', currentDance, 'figures'])) || [],
-        figureTypes = mori.toJs(mori.get(appState, 'figureTypes')),
-        danceMenusData = mori.toJs(mori.get(appState, 'danceMenusData'));
+        figures = mori.toJs(mori.getIn(props.state, ['dances', currentDance, 'figures'])) || [],
+        figureTypes = mori.toJs(mori.get(props.state, 'figureTypes')),
+        danceMenusData = mori.toJs(mori.get(props.state, 'danceMenusData'));
 
     if (uiState.mode === 'dances') {
         return rel('div', {
@@ -274,14 +220,14 @@ export function App(props) {
                 type: 'button',
                 value: 'New Dance',
                 className: 'button',
-                onClick: addNewDance
+                onClick: props.addNewDance
             }),
 
             // dance list
             rel(DanceList, {
                 dances: dances,
-                editDance: editDance,
-                deleteDance: deleteDance
+                editDance: props.editDance,
+                deleteDance: props.deleteDance
             })
         );
 
@@ -294,7 +240,7 @@ export function App(props) {
 
             rel('div', null,
                 rel('a', {
-                        onClick: switchUiMode.bind(null, 'dances'),
+                        onClick: props.switchUiMode.bind(null, 'dances'),
                         className: 'link'
                     },
                     '<< Back to Dances List'
@@ -311,22 +257,22 @@ export function App(props) {
                     value: dances[currentDance] ? dances[currentDance].title : '',
                     placeholder: 'Untitled Dance',
                     className: 'dance_title_text_field',
-                    onChange: (event) => setDanceProperty('title', event.target.value)
+                    onChange: (event) => props.setDanceProperty('title', event.target.value)
                 }),
 
                 // authors
                 ' by ',
                 rel(TextField, {
                     value: dances[currentDance] ? dances[currentDance].authors : '',
-                    placeholder: 'Authors',
+                    placeholder: 'Author(s)',
                     className: 'dance_authors_text_field',
-                    onChange: (event) => setDanceProperty('authors', event.target.value)
+                    onChange: (event) => props.setDanceProperty('authors', event.target.value)
                 }),
             ),
 
             // dance menus
             rel(DanceMenus, {
-                setDanceMenuProperty: setDanceMenuProperty,
+                setDanceMenuProperty: props.setDanceMenuProperty,
                 // TODO: handle initialization better
                 currentDanceData: dances[currentDance] || [],
                 danceMenusData: danceMenusData
@@ -337,14 +283,14 @@ export function App(props) {
             // figure buttons
             rel(FigureButtons, {
                 figureTypes: figureTypes,
-                addFigure: addFigure
+                addFigure: props.addFigure
             }),
 
             rel(FigureList, {
                 figures: figures,
                 figureTypes: figureTypes,
-                modifyFigure: modifyFigure,
-                deleteFigure: deleteFigure
+                modifyFigure: props.modifyFigure,
+                deleteFigure: props.deleteFigure
             }),
         );
 
@@ -352,24 +298,3 @@ export function App(props) {
         return rel('h1', 'Oops!');
     }
 };
-
-/*
-  const danceTitleOld = rel('input', {
-        type: 'text',
-        id: 'dance-title',
-        className: 'title_field',
-        placeholder: 'Dance Title...',
-        onKeyUp: onSimpleInput
-    });
-*/
-
-/*
-    const onSimpleInput = (event) => {
-        // console.log("onSimpleInput", event);
-        const input = event.target;
-        const text = input.value;
-        console.log(text, input);
-        const id = input.id;
-        // const isEnterKey = (event.which == 13);
-    };
-*/
