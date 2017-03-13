@@ -17,6 +17,7 @@ var numberify = (val) => {
 };
 
 /**
+ * Button implemented as a div.
  * @arg {Object} props
  * @arg {String} props.text - The string to display in the button.
  */
@@ -107,7 +108,7 @@ const FigureItem = (props) => {
             )
         )
     );
-}
+};
 
 const FigureList = (props) => {
 
@@ -218,107 +219,125 @@ const DanceList = (props) => {
         },
         ...danceItems
     );
-}
+};
+
+const DancesScreen = (props) => rel('div', {
+        className: 'app_wrapper'
+    },
+
+    // screen title
+    rel('h1', null, 'Dances'),
+
+    // new dance button
+    rel('input', {
+        type: 'button',
+        value: 'New Dance',
+        className: 'button',
+        onClick: props.addNewDance
+    }),
+
+    // dance list
+    rel(DanceList, {
+        dances: props.dances,
+        editDance: props.editDance,
+        deleteDance: props.deleteDance
+    })
+);
+
+const EditDanceScreen = (props) => rel('div', {
+        className: 'app_wrapper'
+    },
+
+    // "back to dances list" link
+    rel('div', null,
+        rel('a', {
+                onClick: props.switchUiMode.bind(null, 'dances'),
+                className: 'link'
+            },
+            '<< Back to Dances List'
+        ),
+    ),
+
+    rel('h1', null, 'Edit Dance'),
+
+    // dance title and authors
+    rel('div', {
+            className: 'dance_title_author'
+        },
+        rel(TextField, {
+            value: props.dances[props.currentDance] ? props.dances[props.currentDance].title : '',
+            placeholder: 'Untitled Dance',
+            className: 'dance_title_text_field',
+            onChange: (event) => props.setDanceProperty('title', event.target.value)
+        }),
+
+        // authors
+        ' by ',
+        rel(TextField, {
+            value: props.dances[props.currentDance] ? props.dances[props.currentDance].authors : '',
+            placeholder: 'Author(s)',
+            className: 'dance_authors_text_field',
+            onChange: (event) => props.setDanceProperty('authors', event.target.value)
+        }),
+    ),
+
+    // dance menus
+    rel(DanceMenus, {
+        setDanceMenuProperty: props.setDanceMenuProperty,
+        // TODO: handle initialization better
+        currentDanceData: props.dances[props.currentDance] || [],
+        danceMenusData: props.danceMenusData
+    }),
+
+    rel('h3', null, 'Figures'),
+
+    // figure buttons
+    rel(FigureButtons, {
+        figureTypes: props.figureTypes,
+        addFigure: props.addFigure
+    }),
+
+    rel(FigureList, {
+        figures: props.figures,
+        figureTypes: props.figureTypes,
+        modifyFigure: props.modifyFigure,
+        deleteFigure: props.deleteFigure
+    }),
+);
 
 export const App = (props) => {
     log("props.state then props", props.state, props);
 
     const uiState = mori.toJs(mori.get(props.state, 'uiState')),
-        currentDance = mori.getIn(props.state, ['uiState', 'currentDance']),
-        dances = mori.toJs(mori.get(props.state, 'dances')),
-        // TODO: handle initialization better
-        figures = mori.toJs(mori.getIn(props.state, ['dances', currentDance, 'figures'])) || [],
-        figureTypes = mori.toJs(mori.get(props.state, 'figureTypes')),
-        danceMenusData = mori.toJs(mori.get(props.state, 'danceMenusData'));
+        dances = mori.toJs(mori.get(props.state, 'dances'));
 
     if (uiState.mode === 'dances') {
-        return rel('div', {
-                className: 'app_wrapper'
-            },
-
-            // screen title
-            rel('h1', null, 'Dances'),
-
-            // new dance button
-            rel('input', {
-                type: 'button',
-                value: 'New Dance',
-                className: 'button',
-                onClick: props.addNewDance
-            }),
-
-            // dance list
-            rel(DanceList, {
-                dances: dances,
-                editDance: props.editDance,
-                deleteDance: props.deleteDance
-            })
-        );
+        return rel(DancesScreen, {
+            addNewDance: props.addNewDance,
+            editDance: props.editDance,
+            deleteDance: props.deleteDance,
+            dances: dances
+        });
 
     } else if (uiState.mode === 'editDance') {
-        return rel('div', {
-                className: 'app_wrapper'
-            },
+        return rel(EditDanceScreen, {
+            switchUiMode: props.switchUiMode,
 
-            // back to dances list
+            setDanceProperty: props.setDanceProperty,
+            setDanceMenuProperty: props.setDanceMenuProperty,
 
-            rel('div', null,
-                rel('a', {
-                        onClick: props.switchUiMode.bind(null, 'dances'),
-                        className: 'link'
-                    },
-                    '<< Back to Dances List'
-                ),
-            ),
+            addFigure: props.addFigure,
+            modifyFigure: props.modifyFigure,
+            deleteFigure: props.deleteFigure,
 
-            rel('h1', null, 'Edit Dance'),
-
-            // dance title and authors
-            rel('div', {
-                    className: 'dance_title_author'
-                },
-                rel(TextField, {
-                    value: dances[currentDance] ? dances[currentDance].title : '',
-                    placeholder: 'Untitled Dance',
-                    className: 'dance_title_text_field',
-                    onChange: (event) => props.setDanceProperty('title', event.target.value)
-                }),
-
-                // authors
-                ' by ',
-                rel(TextField, {
-                    value: dances[currentDance] ? dances[currentDance].authors : '',
-                    placeholder: 'Author(s)',
-                    className: 'dance_authors_text_field',
-                    onChange: (event) => props.setDanceProperty('authors', event.target.value)
-                }),
-            ),
-
-            // dance menus
-            rel(DanceMenus, {
-                setDanceMenuProperty: props.setDanceMenuProperty,
-                // TODO: handle initialization better
-                currentDanceData: dances[currentDance] || [],
-                danceMenusData: danceMenusData
-            }),
-
-            rel('h3', null, 'Figures'),
-
-            // figure buttons
-            rel(FigureButtons, {
-                figureTypes: figureTypes,
-                addFigure: props.addFigure
-            }),
-
-            rel(FigureList, {
-                figures: figures,
-                figureTypes: figureTypes,
-                modifyFigure: props.modifyFigure,
-                deleteFigure: props.deleteFigure
-            }),
-        );
+            dances: dances,
+            currentDance: uiState.currentDance,
+            figures: dances[uiState.currentDance].figures,
+            figureTypes: mori.toJs(mori.get(props.state, 'figureTypes')),
+            danceMenusData: mori.toJs(mori.get(props.state, 'danceMenusData'))
+        });
 
     } else {
-        return rel('h1', 'Oops!');
+        return rel('h1', null, 'Oops!  We have a problem...');
     }
 };
