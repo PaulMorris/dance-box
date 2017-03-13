@@ -5,17 +5,32 @@ import { getDefaultsFromArrayOfObjects } from './utilities';
 
 const log = (...args) => console.log(...args.map(mori.toJs));
 
-// convert 'string representations of numbers' (like html menu values)
-// to numbers, if possible, or just return the string.
+/**
+ * convert 'string representations of numbers' (like html menu values)
+ * to numbers, if possible, or just return the string.
+ * @arg {String} val
+ * @returns {String|Number}
+ */
 var numberify = (val) => {
     let n = Number(val);
     return n ? n : val;
 };
 
+/**
+ * @arg {Object} props
+ * @arg {String} props.text - The string to display in the button.
+ */
 const Button = (props) => {
     return rel('div', null, props.text);
 };
 
+/**
+ * @arg {Object} props
+ * @arg {String} props.placeholder
+ * @arg {String} props.value - May be a 'number as a string'.
+ * @arg {String} props.className
+ * @arg {Function} props.onChange
+ */
 const TextField = (props) => rel('input', {
     type: "text",
     placeholder: props.placeholder,
@@ -24,6 +39,15 @@ const TextField = (props) => rel('input', {
     onChange: props.onChange
 });
 
+/**
+ * @arg {Object} props
+ * @arg {String} props.value.value
+ * @arg {String} props.className
+ * @arg {Function} props.handleChange
+ * @arg {Object[]} props.options - Array of menu items / options.
+ * @arg {String} props.options.value - The value for this item / option.
+ * @arg {String} props.options.label - The visible label string.
+ */
 const Menu = (props) => {
     let toOption = item => rel('option', {
             value: item.value
