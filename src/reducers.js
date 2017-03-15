@@ -100,19 +100,19 @@ const deleteDance = (state, action) => {
 };
 
 const setDanceProperty = (state, action) => {
-    let { prop, value } = action.payload,
-        currentDance = mori.getIn(state, ['uiState', 'currentDance']);
-    return mori.assocIn(state, ['dances', currentDance, prop], value);
-};
-
-const setDanceMenuProperty = (state, action) => {
-    let { prop, value } = action.payload,
+    let { prop, value, hasLabel } = action.payload,
         currentDance = mori.getIn(state, ['uiState', 'currentDance']),
+        newValue;
 
-        label = mori.get(mori.some(item => mori.equals(value, mori.get(item, 'value'))), 'value'),
-        valueLabel = mori.hashMap('value', value, 'label', label),
-        newState = mori.assocIn(state, ['dances', currentDance, prop], valueLabel);
-    return newState;
+    if (hasLabel) {
+        // get the label to use when we re-render
+        let predicate = (item) => mori.equals(value, mori.get(item, 'value')),
+            label = mori.get(mori.some(predicate), 'value');
+        newValue = mori.hashMap('value', value, 'label', label);
+    } else {
+        newValue = value;
+    }
+    return mori.assocIn(state, ['dances', currentDance, prop], newValue);
 };
 
 const addFigure = (state, action) => {
@@ -144,7 +144,7 @@ const modifyFigure = (state, action) => {
 };
 
 const deleteFigure = (state, action) => {
-    let figureIndex = action.payload.figureIndex,
+    let figureIndex = action.payload,
         currentDance = mori.getIn(state, ['uiState', 'currentDance']),
         figures = mori.getIn(state, ['dances', currentDance, 'figures']),
         oneLessFigure = vectorRemove(figures, figureIndex),
@@ -164,7 +164,6 @@ const reducerLookup = {
     'DELETE_DANCE': deleteDance,
 
     'SET_DANCE_PROPERTY': setDanceProperty,
-    'SET_DANCE_MENU_PROPERTY': setDanceMenuProperty,
 
     'ADD_FIGURE': addFigure,
     'MODIFY_FIGURE': modifyFigure,

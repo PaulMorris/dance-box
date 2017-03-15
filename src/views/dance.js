@@ -28,10 +28,7 @@ const FigureItem = (props) => {
 
     const handleDelete = event => props.dispatch({
         type: 'DELETE_FIGURE',
-        // TODO: nesting not needed
-        payload: {
-            figureIndex: props.figureIndex
-        }
+        payload: props.figureIndex
     });
 
     const menus = Object.keys(props.typeData).filter(arraysOnly).map(toMenu);
@@ -127,8 +124,12 @@ const DanceMenus = (props) => {
                     className: "dance_data_menu",
                     handleChange: event => {
                         props.dispatch({
-                            type: 'SET_DANCE_MENU_PROPERTY',
-                            payload: {prop: key, value: numberify(event.target.value)}
+                            type: 'SET_DANCE_PROPERTY',
+                            payload: {
+                                prop: key,
+                                value: numberify(event.target.value),
+                                hasLabel: true
+                            }
                         })
                     }
                 });
@@ -175,7 +176,11 @@ export const DanceView = (props) => rel('div', {
             onChange: event => {
                 props.dispatch({
                     type: 'SET_DANCE_PROPERTY',
-                    payload: {prop: 'title', value: event.target.value}
+                    payload: {
+                        prop: 'title',
+                        value: event.target.value,
+                        haslabel: false
+                    }
                 })
             }
         }),
@@ -189,7 +194,11 @@ export const DanceView = (props) => rel('div', {
             onChange: event => {
                 props.dispatch({
                     type: 'SET_DANCE_PROPERTY',
-                    payload: {prop: 'authors', value: event.target.value}
+                    payload: {
+                        prop: 'authors',
+                        value: event.target.value,
+                        hasLabel: false
+                    }
                 })
             }
         }),
