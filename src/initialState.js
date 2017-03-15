@@ -136,6 +136,10 @@ export const initialState = {
               {value: 'Ones', label: 'Ones'},
               {value: 'Twos', label: 'Twos'}
           ],
+          hand: [
+              {value: 'Right', label: 'Right Hand', default: true},
+              {value: 'Left', label: 'Left Hand'}
+          ],
           howFar: [
               {value: 0.25, label: 'One Quarter'},
               {value: 0.5, label: 'Half Way'},
@@ -330,6 +334,22 @@ export const initialState = {
           duration: [
               {value: 8, label: 'For 8 Beats'},
               {value: 16, label: 'For 16 Beats', default: true}
+          ]
+      },
+      'Mad Robin': {
+          who: [
+              {value: 'Partner', label: 'Partner', default: true},
+              {value: 'Neighbor', label: 'Neighbor'},
+              {value: 'Gents', label: 'Gents'},
+              {value: 'Ladies', label: 'Ladies'},
+              {value: 'Ones', label: 'Ones'},
+              {value: 'Twos', label: 'Twos'}
+          ],
+          duration: [
+              {value: 4, label: 'For 4 Beats', default: true},
+              {value: 8, label: 'For 8 Beats'},
+              {value: 12, label: 'For 12 Beats'},
+              {value: 16, label: 'For 16 Beats'}
           ]
       }
   }
