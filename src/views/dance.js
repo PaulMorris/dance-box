@@ -105,7 +105,7 @@ const FigureButtons = (props) => {
         );
     };
 
-    const figItems = Object.keys(props.figureTypes).map(figNameToLi);
+    const figItems = Object.keys(props.figureTypes).sort().map(figNameToLi);
 
     return rel('ul', {
             className: 'figure_button_list'

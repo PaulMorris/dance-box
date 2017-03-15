@@ -8,6 +8,8 @@ import mori from 'mori';
 
 // localStorage.clear();
 
+// CREATE STORE / HANDLE LOCAL STORAGE
+
 // TODO: better not to do mori conversion to JS when saving/restoring state
 const loadState = () => {
     try {
@@ -36,6 +38,7 @@ const unsubscribe = store.subscribe(() => {
     saveState(mori.toJs(store.getState()));
 });
 
+// RENDER
 
 render(
   // make the containers aware of the store, using the <Provider /> component
