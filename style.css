@@ -67,6 +67,25 @@ a {
     cursor: pointer;
 }
 
+/* DANCE CARDS */
+.dance_card {
+    background: white;
+    border: 1px solid #ccc;
+    width: 600px;
+    height: 160px;
+    overflow: auto;
+    display: block;
+}
+.dance_card_small {
+    background: white;
+    border: 1px solid #ccc;
+    width: 400px;
+    height: 150px;
+    font-size: 50%;
+    overflow: auto;
+    display: block;
+}
+
 /* DANCE LIST */
 .dance_list {
     margin: 20px 0px;

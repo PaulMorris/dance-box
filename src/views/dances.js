@@ -3,6 +3,7 @@
 
 import React from 'react';
 const rel = React.createElement;
+import { DanceCard } from './basicComponents';
 
 const DanceList = (props) => {
 
@@ -33,6 +34,11 @@ const DanceList = (props) => {
                 },
                 'Delete'
             ),
+            rel(DanceCard, {
+                className: 'dance_card_small',
+                value: props.dances[key].danceCard || '',
+                readOnly: true
+            }),
         );
     });
 

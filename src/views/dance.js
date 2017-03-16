@@ -1,7 +1,7 @@
 // Components for the view of a list of dances
 
 import React from 'react';
-import { Menu, TextField } from './basicComponents';
+import { Menu, TextField, DanceCard } from './basicComponents';
 import { numberify, getDefaultsFromArrayOfObjects } from '../utilities';
 
 const rel = React.createElement;
@@ -225,4 +225,28 @@ export const DanceView = (props) => rel('div', {
         figures: props.figures,
         figureTypes: props.figureTypes
     }),
+
+    // read-only dance card, contents will eventually be auto-generated from figures
+    rel(DanceCard, {
+        className: 'dance_card',
+        value: props.dances[props.currentDance] ? props.dances[props.currentDance].danceCard : '',
+        readOnly: true
+    }),
+
+    // user-editable dance card, typically will be based on auto-generated card (allowing modifications)
+    rel(DanceCard, {
+        className: 'dance_card',
+        placeholder: 'Editable dance card',
+        value: props.dances[props.currentDance] ? props.dances[props.currentDance].danceCard : '',
+        onChange: (event) => {
+            props.dispatch({
+                type: 'SET_DANCE_PROPERTY',
+                payload: {
+                    prop: 'danceCard',
+                    value: event.target.value,
+                    hasLabel: false
+                }
+            })
+        }
+    })
 );

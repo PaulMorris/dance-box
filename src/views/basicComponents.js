@@ -52,3 +52,13 @@ export const Menu = (props) => {
         ...props.options.map(toOption)
     );
 };
+
+export const DanceCard = (props) => rel('textarea', {
+    className: props.className,
+    value: props.value,
+    placeholder: props.placeholder,
+    onChange: props.onChange,
+    readOnly: props.readOnly,
+    cols: 80,
+    rows: 12
+});

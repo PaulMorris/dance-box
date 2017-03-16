@@ -15,6 +15,8 @@ const makeDefaultDance = (danceMenusData) => {
             notesCalling: '',
             notesTeaching: '',
             notesOther: '',
+            autoDanceCard: '',
+            danceCard: '',
             figures: [
                 // just for reference...
                 // { type: 'circle', direction: 'Left', duration: 8 },
