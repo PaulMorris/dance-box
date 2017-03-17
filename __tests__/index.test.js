@@ -25,3 +25,27 @@ test('getStartEnd function', () => {
     expect(result.startBeat).toBe(33);
     expect(result.endBeat).toBe(40);
 });
+
+import { initialState } from '../src/initialState';
+
+let figureTypes = initialState.figureTypes;
+let figKeys = Object.keys(figureTypes);
+
+test('all figure button data includes duration', () => {
+    let noDuration = figKeys.filter(key => figureTypes[key].duration === undefined);
+    expect(noDuration).toEqual([]);
+});
+
+test('all figure button properties have a default', () => {
+    let aFigWithoutDefault = figKeys.find(key => {
+        let fig = figureTypes[key];
+
+        return Object.keys(fig).find(key2 => {
+            let prop = fig[key2];
+
+            let objectsWithDefaultPropTrue = prop.filter(obj => obj.default === true);
+            return objectsWithDefaultPropTrue.length !== 1;
+        });
+    });
+    expect(aFigWithoutDefault).toEqual(undefined);
+});
