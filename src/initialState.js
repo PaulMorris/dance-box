@@ -61,72 +61,6 @@ export const initialState = {
   },
 
   figureTypes: {
-      Circle: {
-          direction: [
-              {value: 'Left', label: 'Left', default: true},
-              {value: 'Right', label: 'Right'}
-          ],
-          howFar: [
-              {value: 1, label: '1 Place'},
-              {value: 2, label: '2 Places'},
-              {value: 3, label: '3 Places'},
-              {value: 4, label: '4 Places', default: true},
-              {value: 5, label: '5 Places'},
-              {value: 6, label: '6 Places'}
-          ],
-          duration: [
-              {value: 4, label: 'For 4 Beats'},
-              {value: 8, label: 'For 8 Beats', default: true},
-              {value: 12, label: 'For 12 Beats'},
-              {value: 16, label: 'For 16 Beats'}
-          ]
-      },
-      Star: {
-          direction: [
-              {value: 'Left', label: 'Left', default: true},
-              {value: 'Right', label: 'Right'}
-          ],
-          howFar: [
-              {value: 1, label: '1 Place'},
-              {value: 2, label: '2 Places'},
-              {value: 3, label: '3 Places'},
-              {value: 4, label: '4 Places', default: true},
-              {value: 5, label: '5 Places'},
-              {value: 6, label: '6 Places'}
-          ],
-          hands: [
-              {value: 'Wrist', label: 'Wrist Style', default: true},
-              {value: 'HandsAcross', label: 'Hands Across Style'}
-          ],
-          duration: [
-              {value: 4, label: 'For 4 Beats'},
-              {value: 8, label: 'For 8 Beats', default: true},
-              {value: 12, label: 'For 12 Beats'},
-              {value: 16, label: 'For 16 Beats'}
-          ]
-      },
-      Swing: {
-          who: [
-              {value: 'Partner', label: 'Partner', default: true},
-              {value: 'Neighbor', label: 'Neighbor'}
-          ],
-          duration: [
-              {value: 4, label: 'For 4 Beats'},
-              {value: 8, label: 'For 8 Beats'},
-              {value: 12, label: 'For 12 Beats'},
-              {value: 16, label: 'For 16 Beats', default: true}
-          ]
-      },
-      Balance: {
-          who: [
-              {value: 'Partner', label: 'Partner', default: true},
-              {value: 'Neighbor', label: 'Neighbor'},
-              {value: 'TheRing', label: 'The Ring'}
-          ],
-          duration: [
-              {value: 4, label: 'For 4 Beats', default: true}
-          ]
-      },
       'Allemande': {
           who: [
               {value: 'Partner', label: 'Partner', default: true},
@@ -157,6 +91,42 @@ export const initialState = {
               {value: 16, label: 'For 16 Beats'}
           ]
       },
+      'Balance': {
+          who: [
+              {value: 'Partner', label: 'Partner', default: true},
+              {value: 'Neighbor', label: 'Neighbor'},
+              {value: 'TheRing', label: 'The Ring'}
+          ],
+          duration: [
+              {value: 4, label: 'For 4 Beats', default: true}
+          ]
+      },
+      'Box the Gnat': {
+          who: [
+              {value: 'Partner', label: 'Partner', default: true},
+              {value: 'Neighbor', label: 'Neighbor'},
+              {value: 'Gents', label: 'Gents'},
+              {value: 'Ladies', label: 'Ladies'},
+              {value: 'Ones', label: 'Ones'},
+              {value: 'Twos', label: 'Twos'}
+          ],
+          duration: [
+              {value: 4, label: 'For 4 Beats', default: true}
+          ]
+      },
+      'California Twirl': {
+          who: [
+              {value: 'Partner', label: 'Partner', default: true},
+              {value: 'Neighbor', label: 'Neighbor'},
+              {value: 'Gents', label: 'Gents'},
+              {value: 'Ladies', label: 'Ladies'},
+              {value: 'Ones', label: 'Ones'},
+              {value: 'Twos', label: 'Twos'}
+          ],
+          duration: [
+              {value: 4, label: 'For 4 Beats', default: true}
+          ]
+      },
       'Chain': {
           who: [
               {value: 'Ladies', label: 'Ladies', default: true},
@@ -172,64 +142,30 @@ export const initialState = {
               {value: 4, label: 'For 4 Beats', default: true}
           ]
       },
-      'Courtesy Turn': {
-          who: [
-              {value: 'Partner', label: 'Partner', default: true},
-              {value: 'Neighbor', label: 'Neighbor'}
-          ],
-          duration: [
-              {value: 4, label: 'For 4 Beats', default: true}
-          ]
-      },
-      'Long Lines F & B': {
-          duration: [
-              {value: 8, label: 'For 8 Beats', default: true}
-          ]
-      },
-      'Right and Left Through': {
-          duration: [
-              {value: 8, label: 'For 8 Beats', default: true}
-          ]
-      },
-      'Promenade': {
-          who: [
-              {value: 'Partner', label: 'Partner', default: true},
-              {value: 'Neighbor', label: 'Neighbor'}
-          ],
+      'Circle': {
           direction: [
-              {value: 'Across', label: 'Across the Set', default: true},
-              {value: 'Side', label: 'Side of Set'},
-              {value: 'LeftDiagonal', label: 'Left Diagonal'},
-              {value: 'RightDiagonal', label: 'Right Diagonal'}
+              {value: 'Left', label: 'Left', default: true},
+              {value: 'Right', label: 'Right'}
+          ],
+          howFar: [
+              {value: 1, label: '1 Place'},
+              {value: 2, label: '2 Places'},
+              {value: 3, label: '3 Places'},
+              {value: 4, label: '4 Places', default: true},
+              {value: 5, label: '5 Places'},
+              {value: 6, label: '6 Places'}
           ],
           duration: [
-              {value: 4, label: 'For 4 Beats', default: true},
-              {value: 8, label: 'For 8 Beats'},
+              {value: 4, label: 'For 4 Beats'},
+              {value: 8, label: 'For 8 Beats', default: true},
               {value: 12, label: 'For 12 Beats'},
               {value: 16, label: 'For 16 Beats'}
           ]
       },
-      'Figure Eight': {
-          who: [
-              {value: 'Ones', label: 'Ones', default: true},
-              {value: 'Twos', label: 'Twos',}
-          ],
-          direction: [
-              {value: 'Above', label: 'Above', default: true},
-              {value: 'Below', label: 'Below'}
-          ],
-          duration: [
-              {value: 8, label: 'For 8 Beats', default: true}
-          ]
-      },
-      'California Twirl': {
+      'Courtesy Turn': {
           who: [
               {value: 'Partner', label: 'Partner', default: true},
-              {value: 'Neighbor', label: 'Neighbor'},
-              {value: 'Gents', label: 'Gents'},
-              {value: 'Ladies', label: 'Ladies'},
-              {value: 'Ones', label: 'Ones'},
-              {value: 'Twos', label: 'Twos'}
+              {value: 'Neighbor', label: 'Neighbor'}
           ],
           duration: [
               {value: 4, label: 'For 4 Beats', default: true}
@@ -258,7 +194,56 @@ export const initialState = {
               {value: 16, label: 'For 16 Beats'}
           ]
       },
-      'Box the Gnat': {
+      'Figure Eight': {
+          who: [
+              {value: 'Ones', label: 'Ones', default: true},
+              {value: 'Twos', label: 'Twos',}
+          ],
+          direction: [
+              {value: 'Above', label: 'Above', default: true},
+              {value: 'Below', label: 'Below'}
+          ],
+          duration: [
+              {value: 8, label: 'For 8 Beats', default: true}
+          ]
+      },
+      'Give and Take': {
+          who: [
+              {value: 'GentsTake', label: 'Gents Take', default: true},
+              {value: 'LadiesTake', label: 'Ladies Take'}
+          ],
+          duration: [
+              {value: 8, label: 'For 8 Beats', default: true}
+          ]
+      },
+      'Hey': {
+          howFar: [
+              {value: 1, label: 'Full Hey', default: true},
+              {value: 0.5, label: 'Half Hey'}
+          ],
+          who: [
+              {value: 'LadiesStart', label: 'Ladies Start', default: true},
+              {value: 'GentsStart', label: 'Gents Start'}
+          ],
+          passing: [
+              {value: 'PassingRight', label: 'By Passing Right', default: true},
+              {value: 'PassingLeft', label: 'By Passing Left'}
+          ],
+          style: [
+              {value: 'Standard', label: 'Standard Hey', default: true},
+              {value: 'Ricochet', label: 'Ricochet Hey'}
+          ],
+          duration: [
+              {value: 8, label: 'For 8 Beats'},
+              {value: 16, label: 'For 16 Beats', default: true}
+          ]
+      },
+      'Long Lines F & B': {
+          duration: [
+              {value: 8, label: 'For 8 Beats', default: true}
+          ]
+      },
+      'Mad Robin': {
           who: [
               {value: 'Partner', label: 'Partner', default: true},
               {value: 'Neighbor', label: 'Neighbor'},
@@ -268,7 +253,44 @@ export const initialState = {
               {value: 'Twos', label: 'Twos'}
           ],
           duration: [
+              {value: 4, label: 'For 4 Beats', default: true},
+              {value: 8, label: 'For 8 Beats'},
+              {value: 12, label: 'For 12 Beats'},
+              {value: 16, label: 'For 16 Beats'}
+          ]
+      },
+      'Pass Through': {
+          direction: [
+              {value: 'Across', label: 'Across the Set', default: true},
+              {value: 'UpDown', label: 'Up and Down the Set'},
+              {value: 'LeftDiagonal', label: 'On Left Diagonal'},
+              {value: 'RightDiagonal', label: 'On Right Diagonal'}
+          ],
+          duration: [
               {value: 4, label: 'For 4 Beats', default: true}
+          ]
+      },
+      'Promenade': {
+          who: [
+              {value: 'Partner', label: 'Partner', default: true},
+              {value: 'Neighbor', label: 'Neighbor'}
+          ],
+          direction: [
+              {value: 'Across', label: 'Across the Set', default: true},
+              {value: 'Side', label: 'Side of Set'},
+              {value: 'LeftDiagonal', label: 'Left Diagonal'},
+              {value: 'RightDiagonal', label: 'Right Diagonal'}
+          ],
+          duration: [
+              {value: 4, label: 'For 4 Beats', default: true},
+              {value: 8, label: 'For 8 Beats'},
+              {value: 12, label: 'For 12 Beats'},
+              {value: 16, label: 'For 16 Beats'}
+          ]
+      },
+      'Right and Left Through': {
+          duration: [
+              {value: 8, label: 'For 8 Beats', default: true}
           ]
       },
       'Roll Away': {
@@ -294,62 +316,40 @@ export const initialState = {
               {value: 4, label: 'For 4 Beats', default: true}
           ]
       },
-      'Give and Take': {
-          who: [
-              {value: 'GentsTake', label: 'Gents Take', default: true},
-              {value: 'LadiesTake', label: 'Ladies Take'}
-          ],
-          duration: [
-              {value: 8, label: 'For 8 Beats', default: true}
-          ]
-      },
-      'Pass Through': {
+      'Star': {
           direction: [
-              {value: 'Across', label: 'Across the Set', default: true},
-              {value: 'UpDown', label: 'Up and Down the Set'},
-              {value: 'LeftDiagonal', label: 'On Left Diagonal'},
-              {value: 'RightDiagonal', label: 'On Right Diagonal'}
+              {value: 'Left', label: 'Left', default: true},
+              {value: 'Right', label: 'Right'}
           ],
-          duration: [
-              {value: 4, label: 'For 4 Beats', default: true}
-          ]
-      },
-      'Hey': {
           howFar: [
-              {value: 1, label: 'Full Hey', default: true},
-              {value: 0.5, label: 'Half Hey'}
+              {value: 1, label: '1 Place'},
+              {value: 2, label: '2 Places'},
+              {value: 3, label: '3 Places'},
+              {value: 4, label: '4 Places', default: true},
+              {value: 5, label: '5 Places'},
+              {value: 6, label: '6 Places'}
           ],
-          who: [
-              {value: 'LadiesStart', label: 'Ladies Start', default: true},
-              {value: 'GentsStart', label: 'Gents Start'}
-          ],
-          passing: [
-              {value: 'PassingRight', label: 'By Passing Right', default: true},
-              {value: 'PassingLeft', label: 'By Passing Left'}
-          ],
-          style: [
-              {value: 'Standard', label: 'Standard Hey', default: true},
-              {value: 'Ricochet', label: 'Ricochet Hey'}
+          hands: [
+              {value: 'Wrist', label: 'Wrist Style', default: true},
+              {value: 'HandsAcross', label: 'Hands Across Style'}
           ],
           duration: [
-              {value: 8, label: 'For 8 Beats'},
-              {value: 16, label: 'For 16 Beats', default: true}
-          ]
-      },
-      'Mad Robin': {
-          who: [
-              {value: 'Partner', label: 'Partner', default: true},
-              {value: 'Neighbor', label: 'Neighbor'},
-              {value: 'Gents', label: 'Gents'},
-              {value: 'Ladies', label: 'Ladies'},
-              {value: 'Ones', label: 'Ones'},
-              {value: 'Twos', label: 'Twos'}
-          ],
-          duration: [
-              {value: 4, label: 'For 4 Beats', default: true},
-              {value: 8, label: 'For 8 Beats'},
+              {value: 4, label: 'For 4 Beats'},
+              {value: 8, label: 'For 8 Beats', default: true},
               {value: 12, label: 'For 12 Beats'},
               {value: 16, label: 'For 16 Beats'}
+          ]
+      },
+      'Swing': {
+          who: [
+              {value: 'Partner', label: 'Partner', default: true},
+              {value: 'Neighbor', label: 'Neighbor'}
+          ],
+          duration: [
+              {value: 4, label: 'For 4 Beats'},
+              {value: 8, label: 'For 8 Beats'},
+              {value: 12, label: 'For 12 Beats'},
+              {value: 16, label: 'For 16 Beats', default: true}
           ]
       }
   }
