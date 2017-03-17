@@ -229,7 +229,7 @@ export const DanceView = (props) => rel('div', {
     // read-only dance card, contents will eventually be auto-generated from figures
     rel(DanceCard, {
         className: 'dance_card',
-        value: props.dances[props.currentDance] ? props.dances[props.currentDance].danceCard : '',
+        value: props.dances[props.currentDance] ? props.dances[props.currentDance].autoDanceCard : '',
         readOnly: true
     }),
 

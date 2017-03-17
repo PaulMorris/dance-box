@@ -1,6 +1,7 @@
 import mori from 'mori';
 import { getDefaultsFromArrayOfObjects } from './utilities';
 import { initialState } from './initialState';
+import { makeDanceCard } from './dance-card-maker';
 import uuid from 'node-uuid';
 
 // For logging mori data structures.
@@ -103,6 +104,12 @@ const deleteDance = (state, action) => {
     return newState;
 };
 
+const refreshDanceCard = (state, currentDance) => {
+    let danceCard = makeDanceCard(mori.toJs(mori.getIn(state, ['dances', currentDance])));
+    let newState = mori.assocIn(state, ['dances', currentDance, 'autoDanceCard'], danceCard);
+    return newState;
+};
+
 const setDanceProperty = (state, action) => {
     let { prop, value, hasLabel } = action.payload,
         currentDance = mori.getIn(state, ['uiState', 'currentDance']),
@@ -116,7 +123,10 @@ const setDanceProperty = (state, action) => {
     } else {
         newValue = value;
     }
-    return mori.assocIn(state, ['dances', currentDance, prop], newValue);
+
+    let newState = mori.assocIn(state, ['dances', currentDance, prop], newValue);
+
+    return refreshDanceCard(newState, currentDance);
 };
 
 const addFigure = (state, action) => {
@@ -130,7 +140,7 @@ const addFigure = (state, action) => {
         newFig = mori.merge(figureDefaults, getStartEnd(figures, duration)),
         newFigs = mori.conj(figures, newFig),
         newState = mori.assocIn(state, ['dances', currentDance, 'figures'], newFigs);
-    return newState;
+    return refreshDanceCard(newState, currentDance);
 };
 
 const modifyFigure = (state, action) => {
@@ -144,7 +154,7 @@ const modifyFigure = (state, action) => {
         newFigs1 = mergeIn(figures, [figureIndex, keyProp], valueLabel),
         newFigs2 = 'duration' === keyProp ? refreshStartsEnds(newFigs1) : newFigs1,
         newState = mori.assocIn(state, ['dances', currentDance, 'figures'], newFigs2);
-    return newState;
+    return refreshDanceCard(newState, currentDance);
 };
 
 const deleteFigure = (state, action) => {
@@ -153,9 +163,9 @@ const deleteFigure = (state, action) => {
         figures = mori.getIn(state, ['dances', currentDance, 'figures']),
         oneLessFigure = vectorRemove(figures, figureIndex),
         newFigures = refreshStartsEnds(oneLessFigure),
-        result = mori.assocIn(state, ['dances', currentDance, 'figures'], newFigures);
+        newState = mori.assocIn(state, ['dances', currentDance, 'figures'], newFigures);
     // console.log('DELETE result', mori.toJs(mori.getIn(result, ['dances', mori.getIn(state, ['uiState', 'currentDance']), 'figures'])));
-    return result;
+    return refreshDanceCard(newState, currentDance);
 };
 
 // MAIN REDUCER CODE

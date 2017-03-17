@@ -26,29 +26,29 @@ export const initialState = {
           {value: 'Triple Minor', label: 'Triple Minor'},
           {value: 'Triplet', label: 'Triplet'},
           {value: 'Quadruplet', label: 'Quadruplet'},
-          {value: 'FourFacingFour', label: 'Four Facing Four'},
+          {value: 'Four Facing Four', label: 'Four Facing Four'},
           {value: 'Tempest', label: 'Tempest'},
           {value: 'Square', label: 'Square'},
           {value: 'Break', label: 'Break'},
           {value: 'Other', label: 'Other'}
       ],
       progression: [
-          {value: 1, label: 'Single Progression', default: true},
-          {value: 2, label: 'Double Progression'},
-          {value: 3, label: 'Triple Progression'},
-          {value: 4, label: 'Quadruple Progression'}
+          {value: 'Single Progression', label: 'Single Progression', default: true},
+          {value: 'Double Progression', label: 'Double Progression'},
+          {value: 'Triple Progression', label: 'Triple Progression'},
+          {value: 'Quadruple Progression', label: 'Quadruple Progression'}
       ],
       level: [
-          {value: 'unsetLevel', label: 'Level Unset', default: true},
+          {value: 'Level Unset', label: 'Level Unset', default: true},
           {value: 'Beginner', label: 'Beginner Level'},
           {value: 'Novice', label: 'Novice Level'},
           {value: 'Intermediate', label: 'Intermediate Level'},
           {value: 'Advanced', label: 'Advanced Level'}
       ],
       mixedLevel: [
-          {value: 'mixedLevelUnset', label: 'Mixed Level Unset', default: true},
-          {value: 'mixedLevelFriendly', label: 'Mixed Level Friendly'},
-          {value: 'mixedLevelUnfriendly', label: 'Mixed Level Unfriendly'}
+          {value: 'Mixed Level Unset', label: 'Mixed Level Unset', default: true},
+          {value: 'Mixed Level Friendly', label: 'Mixed Level Friendly'},
+          {value: 'Mixed Level Unfriendly', label: 'Mixed Level Unfriendly'}
       ],
       rating: [
           {value: '', label: 'Rating Unset', default: true},
