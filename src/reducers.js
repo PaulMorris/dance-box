@@ -73,6 +73,8 @@ const switchUiMode = (state, action) => {
     return mori.assocIn(state, ['uiState', 'mode'], newMode);
 };
 
+const rebootState = (state, action) => mori.toClj(initialState);
+
 const addNewDance = (state, action) => {
     let dances = mori.get(state, 'dances'),
         id = uuid.v4(),
@@ -160,6 +162,7 @@ const deleteFigure = (state, action) => {
 
 const reducerLookup = {
     'SWITCH_UI_MODE': switchUiMode,
+    'REBOOT_STATE': rebootState,
 
     'ADD_NEW_DANCE': addNewDance,
     'EDIT_DANCE': editDance,

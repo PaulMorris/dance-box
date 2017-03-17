@@ -66,6 +66,15 @@ export const DancesView = (props) => rel('div', {
         })
     }),
 
+    rel('input', {
+        type: 'button',
+        value: 'Delete Everything and Start Over',
+        className: 'button',
+        onClick: props.dispatch.bind(null, {
+            type: 'REBOOT_STATE'
+        })
+    }),
+
     // dance list
     rel(DanceList, {
         dispatch: props.dispatch,
