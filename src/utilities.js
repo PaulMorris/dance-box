@@ -1,5 +1,10 @@
 // Utility functions.
 
+// for logging immutable data structures
+export const immLog = (...args) => console.log(...args.map(x => {
+    return x.toJS ? x.toJS() : x;
+}));
+
 /**
  * convert 'string representations of numbers' (like html menu values)
  * to numbers, if possible, or just return the string.

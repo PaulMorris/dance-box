@@ -1,18 +1,16 @@
 import React from 'react';
-import mori from 'mori';
 import { DancesView } from './dances';
 import { DanceView } from './dance';
+import { fromJS } from 'immutable';
+import { immLog } from '../utilities';
 
 const rel = React.createElement;
 
-// for logging mori data structures
-const log = (...args) => console.log(...args.map(mori.toJs));
-
 export const App = (props) => {
-    log("props.state, then props:", props.state, props);
+    immLog("props.state, then props:", props.state, props);
 
-    const uiState = mori.toJs(mori.get(props.state, 'uiState')),
-        dances = mori.toJs(mori.get(props.state, 'dances'));
+    const uiState = props.state.get('uiState').toJS(),
+        dances = props.state.get('dances').toJS();
 
     if (uiState.mode === 'dances') {
         return rel(DancesView, {
@@ -26,8 +24,8 @@ export const App = (props) => {
             dances: dances,
             currentDance: uiState.currentDance,
             figures: dances[uiState.currentDance].figures,
-            figureTypes: mori.toJs(mori.get(props.state, 'figureTypes')),
-            danceMenusData: mori.toJs(mori.get(props.state, 'danceMenusData'))
+            figureTypes: props.state.get('figureTypes').toJS(),
+            danceMenusData: props.state.get('danceMenusData').toJS()
         });
 
     } else {

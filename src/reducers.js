@@ -1,14 +1,11 @@
-import mori from 'mori';
-import { getDefaultsFromArrayOfObjects } from './utilities';
+import { Map, List, Set, fromJS } from 'immutable';
+import { getDefaultsFromArrayOfObjects, immLog } from './utilities';
 import { initialState } from './initialState';
 import { makeDanceCardContent } from './dance-card-content';
 import uuid from 'node-uuid';
 
-// For logging mori data structures.
-const log = (...args) => console.log(...args.map(mori.toJs));
-
 const makeDefaultDance = (danceMenusData) => {
-    let menuDefaults = getDefaultsFromArrayOfObjects(mori.toJs(danceMenusData)),
+    let menuDefaults = getDefaultsFromArrayOfObjects(danceMenusData.toJS()),
         nonMenuDefaults = {
             title: '',
             authors: '',
@@ -30,141 +27,122 @@ const makeDefaultDance = (danceMenusData) => {
 };
 
 export var getStartEnd = (figures, duration) => {
-    let lastFig = mori.last(figures),
-        prevEndBeat = lastFig ? mori.get(lastFig, 'endBeat') : 0,
-        result = mori.hashMap('startBeat', prevEndBeat + 1, 'endBeat', prevEndBeat + duration);
+    let lastFig = figures.last(),
+        prevEndBeat = lastFig ? lastFig.get('endBeat') : 0,
+        result = Map({ 'startBeat': prevEndBeat + 1, 'endBeat': prevEndBeat + duration });
     return result;
 };
 
 var refreshStartsEnds = (figures) => {
     let updateStartEnd = (result, fig) => {
-        let duration = mori.getIn(fig, ['duration', 'value']),
+        let duration = fig.getIn(['duration', 'value']),
             startEnd = getStartEnd(result, duration),
-            newFig = mori.conj(result, mori.merge(fig, startEnd));
+            newFig = result.push(fig.merge(startEnd));
         return newFig;
     };
-    let newFigs = mori.reduce(updateStartEnd, mori.vector(), figures);
+    let newFigs = figures.reduce(updateStartEnd, List());
     return newFigs;
-};
-
-// MORI HELPERS
-
-// removes an item from a mori vector at the given index
-const vectorRemove = (coll, index) => mori.into(
-    mori.subvec(coll, 0, index),
-    mori.subvec(coll, index + 1)
-);
-
-// works on hashMaps, incoming and target are hashMaps
-const mergeIn = (coll, path, incoming) => mori.updateIn(
-    coll, path,
-    target => mori.merge(target, incoming)
-);
-
-const removeIn = (coll, path, key) => {
-    let someMap = mori.getIn(coll, path);
-    let poppedPath = mori.pop(path);
-    return mori.assocIn(coll, poppedPath, someMap);
 };
 
 // REDUCER FUNCTIONS
 
 const switchUiMode = (state, action) => {
     let newMode = action.payload;
-    return mori.assocIn(state, ['uiState', 'mode'], newMode);
+    return state.setIn(['uiState', 'mode'], newMode);
 };
 
-const rebootState = (state, action) => mori.toClj(initialState);
+const rebootState = (state, action) => fromJS(initialState);
 
 const addNewDance = (state, action) => {
-    let dances = mori.get(state, 'dances'),
+    let dances = state.get('dances'),
         id = uuid.v4(),
-        danceMenusData = mori.get(state, 'danceMenusData'),
-        newDances = mori.conj(dances, mori.hashMap(id, mori.toClj(makeDefaultDance(danceMenusData)))),
+        danceMenusData = state.get('danceMenusData'),
+        defaultDance = fromJS(makeDefaultDance(danceMenusData)),
+        newDances = dances.set(id, defaultDance),
 
         // TODO: this might be more elegant?
-        state1 = mori.assoc(state, 'dances', newDances),
-        state2 = mori.assocIn(state1, ['uiState', 'currentDance'], id),
-        state3 = mori.assocIn(state2, ['uiState', 'mode'], 'editDance');
+        state1 = state.set('dances', newDances),
+        state2 = state1.setIn(['uiState', 'currentDance'], id),
+        state3 = state2.setIn(['uiState', 'mode'], 'editDance');
     return state3;
 };
 
 const editDance = (state, action) => {
     let id = action.payload,
-        state1 = mori.assocIn(state, ['uiState', 'currentDance'], id),
-        state2 = mori.assocIn(state1, ['uiState', 'mode'], 'editDance');
+        state1 = state.setIn(['uiState', 'currentDance'], id),
+        state2 = state1.setIn(['uiState', 'mode'], 'editDance');
     return state2;
 };
 
 const deleteDance = (state, action) => {
     let id = action.payload,
-        dances = mori.get(state, 'dances'),
-        newDances = mori.dissoc(dances, id),
-        newState = mori.assoc(state, 'dances', newDances);
+        newState = state.deleteIn(['dances', id]);
     return newState;
 };
 
 const refreshDanceCard = (state, currentDance) => {
-    let danceCard = makeDanceCardContent(mori.toJs(mori.getIn(state, ['dances', currentDance])));
-    let newState = mori.assocIn(state, ['dances', currentDance, 'autoDanceCard'], danceCard);
+    let danceCard = makeDanceCardContent(state.getIn(['dances', currentDance]).toJS()),
+        newState = state.setIn(['dances', currentDance, 'autoDanceCard'], danceCard);
     return newState;
 };
 
 const setDanceProperty = (state, action) => {
     let { prop, value, hasLabel } = action.payload,
-        currentDance = mori.getIn(state, ['uiState', 'currentDance']),
+        currentDance = state.getIn(['uiState', 'currentDance']),
         newValue;
 
+    // TODO: are there any without labels?
     if (hasLabel) {
-        // get the label to use when we re-render
-        let predicate = (item) => mori.equals(value, mori.get(item, 'value')),
-            label = mori.get(mori.some(predicate), 'value');
-        newValue = mori.hashMap('value', value, 'label', label);
+        // action.payload only has the value but not the label, so look it up
+        let label = state.getIn(['danceMenusData', prop])
+                     .find(item => item.get('value') === value)
+                     .get('label');
+        newValue = Map({ 'value': value, 'label': label });
     } else {
         newValue = value;
     }
-
-    let newState = mori.assocIn(state, ['dances', currentDance, prop], newValue);
-
+    let newState = state.setIn(['dances', currentDance, prop], newValue);
     return refreshDanceCard(newState, currentDance);
 };
 
 const addFigure = (state, action) => {
     // console.log("reducer add figure", action.payload);
     // console.log("state in reducer", state);
-    let figureDefaults = mori.toClj(action.payload),
-        duration = mori.getIn(figureDefaults, ['duration', 'value']),
-        currentDance = mori.getIn(state, ['uiState', 'currentDance']),
-        figures = mori.getIn(state, ['dances', currentDance, 'figures']),
+    let figureDefaults = fromJS(action.payload),
+        duration = figureDefaults.getIn(['duration', 'value']),
+        currentDance = state.getIn(['uiState', 'currentDance']),
+        figures = state.getIn(['dances', currentDance, 'figures']),
         // TODO: modify swing defaults (who, duration) if preceded by a balance
-        newFig = mori.merge(figureDefaults, getStartEnd(figures, duration)),
-        newFigs = mori.conj(figures, newFig),
-        newState = mori.assocIn(state, ['dances', currentDance, 'figures'], newFigs);
+        newFig = figureDefaults.merge(getStartEnd(figures, duration)),
+        newFigs = figures.push(newFig),
+        newState = state.setIn(['dances', currentDance, 'figures'], newFigs);
     return refreshDanceCard(newState, currentDance);
 };
 
 const modifyFigure = (state, action) => {
-    let { figureIndex, keyProp, value } = action.payload,
-        currentDance = mori.getIn(state, ['uiState', 'currentDance']),
-        figures = mori.getIn(state, ['dances', currentDance, 'figures']),
+    let { type, figureIndex, keyProp, value } = action.payload,
+        currentDance = state.getIn(['uiState', 'currentDance']),
+        figures = state.getIn(['dances', currentDance, 'figures']),
 
-        label = mori.get(mori.some(item => mori.equals(value, mori.get(item, 'value'))), 'value'),
-        valueLabel = mori.hashMap('value', value, 'label', label),
+        // action.payload only has the value but not the label, so look it up
+        label = state.getIn(['figureTypes', type, keyProp])
+                     .find(item => item.get('value') === value)
+                     .get('label'),
+        valueLabel = Map({ 'value': value, 'label': label }),
 
-        newFigs1 = mergeIn(figures, [figureIndex, keyProp], valueLabel),
+        newFigs1 = figures.mergeIn([figureIndex, keyProp], valueLabel),
         newFigs2 = 'duration' === keyProp ? refreshStartsEnds(newFigs1) : newFigs1,
-        newState = mori.assocIn(state, ['dances', currentDance, 'figures'], newFigs2);
+        newState = state.setIn(['dances', currentDance, 'figures'], newFigs2);
     return refreshDanceCard(newState, currentDance);
 };
 
 const deleteFigure = (state, action) => {
     let figureIndex = action.payload,
-        currentDance = mori.getIn(state, ['uiState', 'currentDance']),
-        figures = mori.getIn(state, ['dances', currentDance, 'figures']),
-        oneLessFigure = vectorRemove(figures, figureIndex),
+        currentDance = state.getIn(['uiState', 'currentDance']),
+        figures = state.getIn(['dances', currentDance, 'figures']),
+        oneLessFigure = figures.remove(figureIndex),
         newFigures = refreshStartsEnds(oneLessFigure),
-        newState = mori.assocIn(state, ['dances', currentDance, 'figures'], newFigures);
-    // console.log('DELETE result', mori.toJs(mori.getIn(result, ['dances', mori.getIn(state, ['uiState', 'currentDance']), 'figures'])));
+        newState = state.setIn(['dances', currentDance, 'figures'], newFigures);
     return refreshDanceCard(newState, currentDance);
 };
 
@@ -185,12 +163,9 @@ const reducerLookup = {
     'DELETE_FIGURE': deleteFigure
 };
 
-export default function(
-        state = mori.toClj(initialState),
-        action = { type: 'NONE' }
-    ) {
+export default function(state = fromJS(initialState), action = {type: 'NONE'}) {
 
-    log('reducer', action, state);
+    immLog('reducer', action, state);
     const reducerFunction = reducerLookup[action.type];
     if (reducerFunction) {
         return reducerFunction(state, action);

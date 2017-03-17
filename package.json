@@ -15,7 +15,6 @@
     "react-dom": "^15.4.2",
     "react-redux": "^5.0.2",
     "redux": "^3.6.0",
-    "mori": "^0.3.2",
     "node-uuid": "^1.4.7"
   },
   "devDependencies": {
