@@ -1,7 +1,7 @@
 import mori from 'mori';
 import { getDefaultsFromArrayOfObjects } from './utilities';
 import { initialState } from './initialState';
-import { makeDanceCard } from './dance-card-maker';
+import { makeDanceCardContent } from './dance-card-content';
 import uuid from 'node-uuid';
 
 // For logging mori data structures.
@@ -105,7 +105,7 @@ const deleteDance = (state, action) => {
 };
 
 const refreshDanceCard = (state, currentDance) => {
-    let danceCard = makeDanceCard(mori.toJs(mori.getIn(state, ['dances', currentDance])));
+    let danceCard = makeDanceCardContent(mori.toJs(mori.getIn(state, ['dances', currentDance])));
     let newState = mori.assocIn(state, ['dances', currentDance, 'autoDanceCard'], danceCard);
     return newState;
 };

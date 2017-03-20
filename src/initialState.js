@@ -200,7 +200,7 @@ export const initialState = {
               {value: 'RightDiagonal', label: 'Right Diagonal'}
           ],
           duration: [
-              {value: 8, label: 'For 4 Beats', default: true}
+              {value: 8, label: 'For 8 Beats', default: true}
           ]
       },
       'Circle': {

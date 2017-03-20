@@ -75,6 +75,7 @@ a {
     height: 160px;
     overflow: auto;
     display: block;
+    padding: 1.5%;
 }
 .dance_card_small {
     background: white;
@@ -84,6 +85,7 @@ a {
     font-size: 50%;
     overflow: auto;
     display: block;
+    padding: 1%;
 }
 
 /* DANCE LIST */
