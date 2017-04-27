@@ -1,5 +1,19 @@
 // Handles generating dance cards from dance data.
 
+
+/**
+ * @arg {Object} fig - data about a figure
+ * @return {String} - text to add to a dance card
+ */
+const makeFigureString = (fig) => {
+    // duration and type are handled individually
+    let keys = Object.keys(fig).filter(k => !['duration', 'type'].includes(k)),
+        details = keys.map(k => fig[k]['label']).join(' '),
+
+        figString = '(' + fig.duration.value + ') ' + fig.type  + ' ' + details + ' ';
+    return figString;
+};
+
 // Each of these sections corresponds to a line on the dance card.
 // (Effectively there are unnamed divisions between the named sections.)
 const sections = [
@@ -32,8 +46,7 @@ const makeSectionsFiguresString = (sections, figures) => {
             // no indication that they spill over into the start of the next
             // section.  Maybe there should be?
             let fig = figures[count];
-            // let figStringTypeDuration = fig.type + ' (' + fig.duration.value + ') ';
-            let figString = '(' + fig.duration.value + ') ' + fig.type + ' ';
+            let figString = makeFigureString(fig);
             result += figString;
             count += 1;
         }
